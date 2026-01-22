@@ -1,4 +1,4 @@
-# Prime Vault: ERC-4626 Aggregation Layer
+# Paimon Prime Vault: ERC-4626 Aggregation Layer
 
 ## PP and NAV
 

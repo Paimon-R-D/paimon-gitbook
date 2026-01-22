@@ -11,7 +11,7 @@
 
 * [System Architecture](architecture/README.md)
 * [Launchpad](architecture/launchpad.md)
-* [Prime Vault](architecture/prime-vault.md)
+* [Paimon Prime Vault](architecture/prime-vault.md)
 * [Redemption Mechanism](architecture/redemption-mechanism.md)
 * [Protection Band](architecture/protection-band.md)
 
