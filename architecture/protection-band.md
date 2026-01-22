@@ -1,5 +1,9 @@
 # Premium/Discount Protection Band and Emergency Mechanism
 
+> **⚠️ Implementation Status: PLANNED**
+>
+> The Protection Band mechanism described in this document is part of the Phase 2 roadmap. Current contract implementation does not include automated TWAP monitoring or T+0 suspension triggers. Manual risk control via keeper roles is available in the current release.
+
 ## Weakly Coupled Pricing Model
 
 PPT maintains two concurrent prices:

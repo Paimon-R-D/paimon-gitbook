@@ -5,7 +5,7 @@
 | Risk Type | Description | Mitigation Measures |
 |-----------|-------------|---------------------|
 | **Valuation Risk** | Outdated or conflicting NAV input data | Multi-source verification, audit cycle constraints, outlier exclusion |
-| **Liquidity Risk** | Redemption surges exceeding budgeted capacity | Layered liquidity, three-channel redemptions, protective buffer mechanism |
+| **Liquidity Risk** | Redemption surges exceeding budgeted capacity | Layered liquidity, two-channel redemptions with approval, quota management |
 | **Market Manipulation** | PPT pool depth may be insufficient, making prices susceptible to manipulation | TWAP sampling, buffer trigger, NAV disregarding short-term prices |
 | **Governance Attacks** | Vote-buying leading to poor-quality assets being listed | Layered governance, hard thresholds non-voting coverage, timelock |
 | **Smart Contract Risks** | Code vulnerabilities leading to fund losses | Multi-round audits, bug bounties, phased rollout |
@@ -15,18 +15,19 @@
 
 ### Scenario: Mass Redemption Wave
 
-1. **T+0 budget depletion** → Automatic suspension of emergency redemptions
-2. **T+7 budget exhausted** → New redemptions enter queue
-3. **Queue depth disclosed** → Market-driven pricing of premiums/discounts
-4. **Risk control multi-signature intervention** → Evaluate whether to initiate emergency response
+1. **Emergency quota depletion** → T+0 redemptions rejected until quota refreshed
+2. **Standard quota exhausted** → New T+7 redemptions rejected until quota refreshed
+3. **Large redemptions** → Require keeper approval before processing
+4. **Quota status disclosed** → Market-driven pricing of premiums/discounts
+5. **Risk control intervention** → Keepers evaluate whether to refresh quotas or pause
 
 ### Scenario: Significant NAV Decline
 
-1. **Underlying asset impairment** → NAV downward adjustment
+1. **Underlying asset impairment** → NAV downward adjustment via AssetController
 2. **PPT market price may react prematurely** → Discount widens
-3. **Protection band triggered** → Suspension of T+0 trading
+3. **Keeper intervention** → May reduce quotas or pause redemptions (Protection Band automation planned for Phase 2)
 4. **Ongoing disclosure** → Market receives updated information
-5. **Asset disposal completed** → NAV stabilizes → Normal operations resume
+5. **Asset disposal completed** → NAV stabilizes → Quotas restored → Normal operations resume
 
 ## Emergency Reserve Fund
 
@@ -87,12 +88,12 @@ Only    Pause  Pause  │
 
 ### Risk Level Trigger Thresholds
 
-| Level | Deviation (D_t) | L1+L2 Utilization | Queue Depth | Response |
-|-------|-----------------|-------------------|-------------|----------|
-| **Normal** | < 8% | < 70% | < 5% TVL | Continue operations |
-| **Low** | 8-12% | 70-85% | 5-10% TVL | Warning issued, increased monitoring |
-| **Medium** | 12-15% | 85-95% | 10-20% TVL | Partial pause, T+0 suspended |
-| **High** | > 15% | > 95% | > 20% TVL | Full pause, emergency response activated |
+| Level | Deviation (D_t) | Quota Utilization | Pending Approvals | Response |
+|-------|-----------------|-------------------|-------------------|----------|
+| **Normal** | < 8% | < 70% | < 10 requests | Continue operations |
+| **Low** | 8-12% | 70-85% | 10-20 requests | Warning issued, increased monitoring |
+| **Medium** | 12-15% | 85-95% | 20-50 requests | Keeper review, may reduce quotas |
+| **High** | > 15% | > 95% | > 50 requests | Emergency review, quotas paused |
 
 ### Response Timeline
 
@@ -124,23 +125,23 @@ When sources disagree:
 
 ## Liquidity Risk Deep Dive
 
-### Budget Stress Testing
+### Quota Stress Testing
 
-| Scenario | L1 Draw | L2 Draw | Queue Activation |
-|----------|---------|---------|------------------|
-| Normal | <50% | <30% | No |
-| Moderate Stress | 50-80% | 30-60% | Possible |
-| Severe Stress | >80% | >60% | Yes |
-| Crisis | Depleted | >80% | Full queue mode |
+| Scenario | Emergency Quota | Standard Quota | Keeper Action |
+|----------|-----------------|----------------|---------------|
+| Normal | <50% utilized | <50% utilized | Routine refresh |
+| Moderate Stress | 50-80% utilized | 50-70% utilized | Increased monitoring |
+| Severe Stress | >80% utilized | >70% utilized | Reduced refresh, stricter approval |
+| Crisis | Depleted | >90% utilized | Pause new redemptions |
 
 ### Recovery Timeline
 
 | Phase | Duration | Actions |
 |-------|----------|---------|
-| Immediate | 0-24h | Suspend T+0, assess situation |
-| Short-term | 1-7d | Process T+7 queue, communicate clearly |
+| Immediate | 0-24h | Pause emergency redemptions, assess situation |
+| Short-term | 1-7d | Process pending T+7 redemptions, communicate clearly |
 | Medium-term | 1-4w | Asset liquidation if needed |
-| Recovery | 4-12w | Restore normal operations |
+| Recovery | 4-12w | Gradually restore quotas, return to normal operations |
 
 ## Governance Attack Vectors
 
@@ -190,7 +191,8 @@ Audit reports will be made publicly available upon completion. Subscribe to our 
 Users should understand:
 
 1. **PPT is not a stablecoin** - NAV fluctuates with underlying assets
-2. **Instant liquidity is not guaranteed** - Three-channel system has constraints
-3. **Junior tranche (jPPT) has leverage risk** - Can lose entire principal
-4. **Governance decisions affect returns** - Participate or accept outcomes
-5. **Smart contract risk exists** - Despite audits, bugs are possible
+2. **Instant liquidity is not guaranteed** - Redemptions are subject to quota availability and approval thresholds
+3. **Large redemptions require approval** - Amounts exceeding thresholds (50K standard, 30K emergency) need keeper approval
+4. **Junior tranche (jPPT) has leverage risk** - Can lose entire principal *(Phase 2 feature)*
+5. **Governance decisions affect returns** - Participate or accept outcomes
+6. **Smart contract risk exists** - Despite audits, bugs are possible

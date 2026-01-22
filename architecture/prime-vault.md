@@ -4,16 +4,25 @@
 
 **PPT (Paimon Prime Token)** is an ERC-20 share token issued by Prime Vault, representing the holder's proportional claim on the Vault's net assets.
 
+> **Implementation Note**: The token symbol in the deployed contract is `PP` (PP Token). References to "PPT" in this documentation refer to the same token.
+
 ### NAV Calculation Formula
 
 $$
-\mathrm{NAV}_t=\frac{V_{\text{assets}}-V_{\text{liabilities}}}{S_{\text{PPT}}}
+\mathrm{NAV}_t=\frac{V_{\text{assets}}-V_{\text{liabilities}}}{S_{\text{effective}}}
 $$
 
 Where:
-- **V_assets**: Fair value of assets held by Prime (primarily sourced from disclosures/audits)
-- **V_liabilities**: Unsettled redemption liabilities (including payable portions of queued redemptions)
-- **S_PPT**: Total PPT supply
+- **V_assets**: Fair value of assets held by Prime (grossValue from disclosures/audits)
+- **V_liabilities**: Total redemption liabilities + withdrawable fees
+- **S_effective**: Effective supply = Total PPT supply - Locked shares (shares pending settlement)
+
+### Deposit Constraints
+
+| Parameter | Value | Description |
+|-----------|-------|-------------|
+| **Minimum Deposit** | 500 tokens | Prevents dust deposits and reduces gas overhead |
+| **Locked Mint Period** | Configurable | New deposits may be locked during accumulation periods |
 
 ### Key Principle
 

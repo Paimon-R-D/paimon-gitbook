@@ -25,11 +25,13 @@
 
 | Term | Definition |
 |------|------------|
-| **Budget-0** | Instant liquidity budget (L1), used for T+0 emergency redemptions |
-| **Budget-7** | Standard liquidity budget (L1 + L2), used for T+7 redemptions |
+| **Emergency Quota** | Instant liquidity budget for T+0 emergency redemptions, managed by keepers |
+| **Standard Quota** | Standard liquidity budget (L1 + L2 × 70%), used for T+7 redemptions |
 | **Budget-L** | Long-term liquidity budget (L3), quarterly liquidation cycle |
-| **Protection Band** | PPT permitted deviation range between market price and NAV (±15%) |
+| **Protection Band** | PPT permitted deviation range between market price and NAV (±15%) - *Planned for Phase 2* |
 | **TWAP** | Time-Weighted Average Price, used for manipulation-resistant price sampling |
+| **Effective Supply** | Total PPT supply minus locked shares (shares pending redemption settlement) |
+| **Locked Shares** | PPT shares that are locked pending redemption, excluded from NAV calculations |
 
 ## Governance Terms
 
@@ -66,6 +68,9 @@
 | **Multi-sig** | Multi-signature wallet requiring multiple approvers for transactions |
 | **Oracle** | External data source providing price and NAV information |
 | **Subgraph** | Indexed on-chain data for efficient querying |
+| **Keeper** | Authorized role for operational tasks: quota refresh, approval, settlement |
+| **Redemption Voucher** | ERC-721 NFT issued when redemption settlement exceeds 7 days, transferable claim on pending redemption |
+| **Approval Threshold** | Amount limit above which redemptions require keeper approval (50K standard, 30K emergency) |
 
 ## Asset Terms
 

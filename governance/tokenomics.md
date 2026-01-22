@@ -1,5 +1,10 @@
 # PAIMON Token Economics
 
+> **⚠️ Partial Implementation**
+>
+> - ✅ **Implemented**: Token allocation structure, basic emission framework
+> - 🚧 **Planned (Phase 2)**: esPAIMON distribution, vePAIMON locking, Gauge voting, multi-tier vesting, Boost mechanism
+
 ## Table of Contents
 
 - [1. Token System Overview](#1-token-system-overview)

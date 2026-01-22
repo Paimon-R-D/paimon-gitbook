@@ -1,5 +1,10 @@
 # Governance Structure: Tiered Decision-Making
 
+> **⚠️ Partial Implementation**
+>
+> - ✅ **Implemented**: Multi-sig approval, keeper roles, basic parameter governance
+> - 🚧 **Planned (Phase 2)**: vePAIMON locking, Gauge voting, on-chain governance proposals
+
 ## Design Principles
 
 Governance power requires boundaries. Mixing "incentive allocation" with "risk control hard thresholds" leads to:

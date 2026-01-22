@@ -1,4 +1,4 @@
-# Redemption Mechanism: Three-Channel Design
+# Redemption Mechanism: Two-Channel Design with Approval
 
 ## Design Objectives
 
@@ -6,52 +6,107 @@ The redemption mechanism must balance three competing objectives:
 
 1. **User Experience**: Provide reasonable exit options
 2. **System Security**: Preventing runs that deplete liquidity
-3. **Fairness**: Preventing unfair first-come-first-served dynamics
+3. **Fairness**: Transparent approval process for large redemptions
 
-## Three-Channel Rule
+## Two-Channel System
 
 ### Channel One: Emergency Redemption (T+0)
 
 | Parameters | Settings |
 |------------|----------|
 | Settlement Time | Instant (same block) |
-| Fees | Penalty Rate (Configured by Governance) |
-| Budget Constraint | Utilizes Budget-0 Only (L1 Liquidity) |
-| Suspension Conditions | Automatically pauses when premium/discount exceeds protection band |
+| Base Fee | 0.5% (50 bps) |
+| Penalty Fee | 1.0% (100 bps) |
+| **Total Fee** | **1.5%** |
+| Budget Constraint | Emergency Quota (L1 Liquidity) |
+| Approval Threshold | >30K tokens OR >20% of emergency quota |
 
-**Design Logic**: Curb runs by imposing penalties rather than outright bans. Users willing to pay high fees gain immediate exit rights, subject to budget caps.
+**Design Logic**: Curb runs by imposing penalties rather than outright bans. Users willing to pay higher fees gain immediate exit rights, subject to budget caps and approval requirements.
 
 ### Channel Two: Standard Redemption (T+7)
 
 | Parameters | Settings |
 |------------|----------|
 | Settlement Time | T+7 (7 calendar days) |
-| Fees | Standard Fee Rate (Configured by Governance) |
-| Budget Constraint | Utilization of Budget-7 (L1 + L2 liquidity) |
+| Fee | 0.5% (50 bps) |
+| Budget Constraint | Standard Quota (L1 + L2 liquidity × 70%) |
+| Approval Threshold | >50K tokens OR >20% of standard quota |
 
 **Design Logic**: Aligns with the liquidation cycles of most L2 assets, providing ordinary users with reasonable exit time expectations.
 
-### Channel Three: Queued Redemption
+## Approval Mechanism
 
-When redemption demand exceeds the safety threshold, new redemptions enter the queue:
+Large redemptions require keeper approval before processing:
 
-| Parameters | Settings |
-|------------|----------|
-| Trigger Condition | Cumulative pending redemptions > Safety threshold |
-| Settlement Method | Batch Settlement |
-| Priority | Time + Amount Weighted |
+### Approval Workflow
 
-### Queue Priority Formula
+```
+┌─────────────────┐
+│ Redemption      │
+│ Request         │
+└──────┬──────────┘
+       │
+       ↓
+┌──────────────────────────────┐
+│ Check Amount vs Thresholds   │
+└──────────────┬───────────────┘
+               │
+    ┌──────────┴──────────┐
+    ↓                     ↓
+┌─────────────┐     ┌─────────────┐
+│ Below       │     │ Above       │
+│ Threshold   │     │ Threshold   │
+└──────┬──────┘     └──────┬──────┘
+       ↓                   ↓
+┌─────────────┐     ┌─────────────┐
+│ Auto-Lock   │     │ PENDING     │
+│ Shares      │     │ APPROVAL    │
+└──────┬──────┘     └──────┬──────┘
+       │                   ↓
+       │            ┌─────────────┐
+       │            │ Keeper      │
+       │            │ Review      │
+       │            └──────┬──────┘
+       │                   │
+       │            ┌──────┴──────┐
+       │            ↓             ↓
+       │      ┌─────────┐   ┌─────────┐
+       │      │ Approve │   │ Reject  │
+       │      └────┬────┘   └────┬────┘
+       │           ↓             ↓
+       ↓      Lock Shares   Return Shares
+┌─────────────┐    │
+│ Wait Period │←───┘
+│ (0 or 7d)   │
+└──────┬──────┘
+       ↓
+┌─────────────┐
+│ Settlement  │
+│ (Claim)     │
+└─────────────┘
+```
 
-$$
-\text{Priority}_i = w_T \cdot f(\tau_i) + w_A \cdot g(a_i)
-$$
+### Approval Thresholds
 
-Where:
-- **τ_i**: Queue waiting time for request i
-- **a_i**: Redemption amount for request i
-- **f, g**: Normalization functions (log or capped scaling to prevent order splitting attacks)
-- **w_T, w_A**: Weight coefficients (configured by governance)
+| Channel | Absolute Threshold | Ratio Threshold |
+|---------|-------------------|-----------------|
+| Standard (T+7) | 50,000 tokens | 20% of standard quota |
+| Emergency (T+0) | 30,000 tokens | 20% of emergency quota |
+
+**Note**: Redemptions exceeding EITHER threshold require approval.
+
+## Redemption Voucher (NFT)
+
+When redemption settlement is delayed beyond 7 days, an ERC-721 voucher is automatically issued:
+
+| Feature | Description |
+|---------|-------------|
+| **Trigger** | Settlement delay > 7 days |
+| **Token Standard** | ERC-721 (transferable) |
+| **Contents** | Request ID, net amount, expected settlement time |
+| **Purpose** | Tradeable claim on pending redemption |
+
+This allows users to exit their position by selling the voucher on secondary markets if they cannot wait for settlement.
 
 ## Redemption Flow
 
@@ -63,50 +118,61 @@ Where:
        │
        ↓
 ┌──────────────────────────────┐
-│ Check Safety Threshold & Budgets│
+│ Check Channel & Quota        │
 └──────────────┬───────────────┘
                │
-    ┌──────────┼──────────┬───────────────┐
-    ↓          ↓          ↓               ↓
-┌────────┐  ┌────────┐  ┌───────────┐  ┌────────────────┐
-│Budget-0│  │Budget-7│  │ Over-thresh│  │ Protection Band │
-│Available│ │Available│ │           │  │ Triggered       │
-└───┬────┘  └───┬────┘  └───┬───────┘  └────┬────────────┘
-    ↓           ↓           ↓                ↓
-┌────────┐  ┌────────┐  ┌──────────┐     ┌──────────────┐
-│T+0     │  │T+7     │  │Queued    │     │Pause T+0      │
-│(Penalty)│ │(Standard)│ │Redemption│     │(Emergency)    │
-└────────┘  └────────┘  └──────────┘     └──────────────┘
+    ┌──────────┼──────────┐
+    ↓          ↓          ↓
+┌────────┐  ┌────────┐  ┌────────────────┐
+│Emergency│ │Standard│  │ Insufficient   │
+│Quota OK │ │Quota OK│  │ Quota          │
+└───┬────┘  └───┬────┘  └────┬───────────┘
+    ↓           ↓            ↓
+┌────────┐  ┌────────┐  ┌──────────────┐
+│T+0     │  │T+7     │  │ Rejected     │
+│(1.5%)  │  │(0.5%)  │  │ (Try Later)  │
+└────────┘  └────────┘  └──────────────┘
 ```
 
 ## Budget Transparency
 
-All liquidity budgets and queue statuses **are publicly disclosed in real-time**. Users can query:
+All liquidity budgets are **publicly disclosed in real-time**. Users can query:
 
-- Budget utilization rates for each layer
-- Queue depths and positions
+- Emergency quota utilization
+- Standard quota utilization
+- Pending approval requests
 - Estimated settlement times
 
-**Design rationale**: Transparency is the foundation of trust. Concealing queue status would cause the market to price in worst-case assumptions.
+**Design rationale**: Transparency is the foundation of trust. Concealing quota status would cause the market to price in worst-case assumptions.
 
 ## Fee Structure
 
-| Channel | Fee Type | Typical Range | Purpose |
-|---------|----------|---------------|---------|
-| T+0 | Penalty Fee | 1-5% | Discourage panic exits |
-| T+7 | Standard Fee | 0.1-0.5% | Cover operational costs |
-| Queue | No additional fee | 0% | Fair access for patient users |
+| Channel | Fee Type | Rate | Purpose |
+|---------|----------|------|---------|
+| T+0 | Base + Penalty | 1.5% | Discourage panic exits |
+| T+7 | Standard Fee | 0.5% | Cover operational costs |
 
 ## Anti-Gaming Measures
 
-### Order Splitting Prevention
-The priority formula uses logarithmic scaling for amounts, reducing the incentive to split large orders into many small ones.
+### Large Redemption Control
+The approval mechanism prevents sudden large withdrawals from destabilizing the system.
 
 ### Front-Running Protection
-- Queue position is based on block timestamp, not transaction order within a block
-- Batch settlement randomizes execution order within priority tiers
+- Approval adds a review step for large requests
+- Settlement is processed in order of approval time
 
 ### Budget Gaming Prevention
-- Budgets are calculated on a rolling basis
-- No "reservation" of future budget capacity
-- All budget updates are atomic with redemption execution
+- Quotas are refreshed by keepers based on liquidity conditions
+- No "reservation" of future quota capacity
+- All quota updates are atomic with redemption execution
+
+## State Transitions
+
+| Status | Description | Next States |
+|--------|-------------|-------------|
+| `PENDING_APPROVAL` | Large request awaiting keeper approval | `PENDING`, `REJECTED` |
+| `PENDING` | Approved, shares locked, waiting for settlement time | `CLAIMABLE` |
+| `CLAIMABLE` | Settlement time reached, ready to claim | `SETTLED` |
+| `SETTLED` | Assets claimed, request complete | (Terminal) |
+| `REJECTED` | Keeper rejected the request | (Terminal) |
+| `CANCELLED` | User cancelled before approval | (Terminal) |

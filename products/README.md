@@ -1,5 +1,9 @@
 # Tranche Vault
 
+> **⚠️ Implementation Status: PLANNED**
+>
+> The Tranche Vault (sPPT/jPPT yield stratification) described in this document is part of the Phase 2 roadmap. Current release includes only the Prime Vault (PPT) functionality. Tranche Vault will be deployed as a separate contract layer on top of PPT.
+
 ## Design Motivation
 
 The underlying asset yield in the PPT is approximately 6% APY. This is a real, exogenous yield, yet it lacks appeal in the DeFi market.

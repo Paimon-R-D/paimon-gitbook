@@ -2,56 +2,168 @@
 
 ## Module Overview
 
-| Module | Function |
-|--------|----------|
-| **Prime Vault** | ERC-4626 standard asset aggregation, NAV calculation, redemption state machine |
-| **Tranche Vault** | sPPT/jPPT Yield Stratification, Epoch Settlement, Priority Repayment Logic |
-| **Gauge System** | jPPT Staking, esPAIMON Emission, Boost Calculation |
-| **vePAIMON** | Token Locking, Voting Weight Calculation, Protocol Fee Sharing |
-| **Protection Band** | Deviation Monitoring, T+0 Suspension Trigger, Recovery Condition Check |
-| **Redemption Queue** | Multi-channel redemptions, priority sequencing, batch settlement |
+| Module | Function | Status |
+|--------|----------|--------|
+| **PPT (Prime Vault)** | ERC-4626 standard asset aggregation, NAV calculation, quota management | ✅ Implemented |
+| **RedemptionManager** | Two-channel redemptions (T+0, T+7), approval workflow, settlement | ✅ Implemented |
+| **AssetController** | Asset value updates, delayed settlement management | ✅ Implemented |
+| **RedemptionVoucher** | ERC-721 NFT for delayed redemption claims | ✅ Implemented |
+| **Tranche Vault** | sPPT/jPPT Yield Stratification, Epoch Settlement | 🚧 Planned |
+| **Gauge System** | jPPT Staking, esPAIMON Emission, Boost Calculation | 🚧 Planned |
+| **vePAIMON** | Token Locking, Voting Weight Calculation, Protocol Fee Sharing | 🚧 Planned |
+| **Protection Band** | Automated deviation monitoring, T+0 suspension trigger | 🚧 Planned |
 
 ---
 
-## Prime Vault
+## PPT (Prime Vault) ✅
 
 ### Purpose
-Central asset management vault implementing ERC-4626 standard.
+Central asset management vault implementing ERC-4626 standard. Issues PP (Paimon Prime) tokens representing proportional claims on vault assets.
 
 ### Key Functions
 
 | Function | Description |
 |----------|-------------|
-| `deposit(assets, receiver)` | Deposit underlying assets, receive PPT shares |
-| `withdraw(assets, receiver, owner)` | Withdraw assets by specifying amount |
-| `redeem(shares, receiver, owner)` | Redeem PPT shares for underlying assets |
-| `updateNAV(newValue)` | Update net asset value (oracle/admin) |
+| `deposit(assets, receiver)` | Deposit underlying assets, receive PP shares (min 500 tokens) |
+| `redeem(shares, receiver, owner)` | Direct redemption (disabled, use RedemptionManager) |
+| `sharePrice()` | Get current NAV per share |
+| `totalAssets()` | Get net asset value (gross - liabilities - fees) |
+| `effectiveSupply()` | Get supply excluding locked shares |
+| `getStandardChannelQuota()` | Get available T+7 redemption quota |
+| `getEmergencyChannelQuota()` | Get available T+0 redemption quota |
 
 ### State Variables
 
 | Variable | Type | Description |
 |----------|------|-------------|
-| `totalAssets` | uint256 | Total value of underlying assets |
-| `currentNAV` | uint256 | Current net asset value per share |
-| `budgetL1` | uint256 | Available instant liquidity |
-| `budgetL2` | uint256 | Available standard liquidity |
+| `grossValue` | uint256 | Total gross value of underlying assets |
+| `totalRedemptionLiability` | uint256 | Outstanding redemption obligations |
+| `totalLockedShares` | uint256 | Shares locked pending settlement |
+| `emergencyQuota` | uint256 | Available T+0 redemption budget |
+| `lockedMintAssets` | uint256 | Assets locked during accumulation period |
 
 ### Events
 
 ```solidity
 event Deposit(address indexed sender, address indexed owner, uint256 assets, uint256 shares);
-event Withdraw(address indexed sender, address indexed receiver, address indexed owner, uint256 assets, uint256 shares);
-event NAVUpdated(uint256 oldNAV, uint256 newNAV);
+event GrossValueUpdated(uint256 oldValue, uint256 newValue);
+event EmergencyQuotaUpdated(uint256 oldQuota, uint256 newQuota);
 ```
 
 ---
 
-## Tranche Vault
+## RedemptionManager ✅
+
+### Purpose
+Manage two-channel redemption requests with approval workflow and settlement.
+
+### Key Functions
+
+| Function | Description |
+|----------|-------------|
+| `requestStandardRedemption(shares)` | Request T+7 redemption |
+| `requestEmergencyRedemption(shares)` | Request T+0 redemption (1.5% fee) |
+| `approveRedemption(requestId)` | Keeper approves large redemption |
+| `rejectRedemption(requestId)` | Keeper rejects redemption |
+| `claimRedemption(requestId)` | Claim settled redemption |
+| `cancelRedemption(requestId)` | Cancel pending request |
+
+### Approval Thresholds
+
+| Channel | Absolute | Ratio |
+|---------|----------|-------|
+| Standard (T+7) | 50,000 tokens | 20% of quota |
+| Emergency (T+0) | 30,000 tokens | 20% of quota |
+
+### State Variables
+
+| Variable | Type | Description |
+|----------|------|-------------|
+| `requests` | mapping | All redemption requests by ID |
+| `baseRedemptionFeeBps` | uint256 | Base fee (default 50 bps) |
+| `emergencyPenaltyFeeBps` | uint256 | Emergency penalty (default 100 bps) |
+| `standardApprovalThreshold` | ApprovalThreshold | T+7 approval limits |
+| `emergencyApprovalThreshold` | ApprovalThreshold | T+0 approval limits |
+
+### Events
+
+```solidity
+event RedemptionRequested(uint256 indexed requestId, address indexed user, uint256 shares, uint8 channel);
+event RedemptionApproved(uint256 indexed requestId, address indexed approver);
+event RedemptionRejected(uint256 indexed requestId, address indexed rejecter);
+event RedemptionClaimed(uint256 indexed requestId, address indexed user, uint256 assets, uint256 fee);
+event RedemptionCancelled(uint256 indexed requestId, address indexed user);
+```
+
+### Request States
+
+```solidity
+enum RedemptionStatus {
+    NONE,
+    PENDING_APPROVAL,  // Awaiting keeper approval
+    PENDING,           // Approved, waiting for settlement time
+    CLAIMABLE,         // Ready to claim
+    SETTLED,           // Claimed
+    REJECTED,          // Rejected by keeper
+    CANCELLED          // Cancelled by user
+}
+```
+
+---
+
+## AssetController ✅
+
+### Purpose
+Manage asset value updates and delayed settlement for sales/purchases.
+
+### Key Functions
+
+| Function | Description |
+|----------|-------------|
+| `updateGrossValue(newValue)` | Update total asset value |
+| `createDelayedSettlement(type, amount, deadline)` | Create pending asset settlement |
+| `executeSettlement(settlementId)` | Execute pending settlement |
+
+### Events
+
+```solidity
+event GrossValueUpdated(uint256 oldValue, uint256 newValue);
+event DelayedSettlementCreated(uint256 indexed id, uint8 settlementType, uint256 amount);
+event DelayedSettlementExecuted(uint256 indexed id);
+```
+
+---
+
+## RedemptionVoucher ✅
+
+### Purpose
+ERC-721 NFT representing claims on delayed redemptions (issued when settlement exceeds 7 days).
+
+### Key Functions
+
+| Function | Description |
+|----------|-------------|
+| `mint(to, requestId, netAmount, settlementTime)` | Issue voucher for delayed redemption |
+| `burn(tokenId)` | Burn voucher after redemption claimed |
+| `getVoucherInfo(tokenId)` | Get voucher details |
+
+### Events
+
+```solidity
+event VoucherMinted(uint256 indexed tokenId, address indexed to, uint256 requestId, uint256 netAmount);
+event VoucherBurned(uint256 indexed tokenId);
+```
+
+---
+
+## Tranche Vault 🚧 (Planned)
 
 ### Purpose
 Split PPT yield into senior (fixed) and junior (variable) tranches.
 
-### Key Functions
+> This module is planned for Phase 2 deployment.
+
+### Planned Functions
 
 | Function | Description |
 |----------|-------------|
@@ -61,31 +173,16 @@ Split PPT yield into senior (fixed) and junior (variable) tranches.
 | `redeemJunior(shares)` | Redeem jPPT for PPT (subordinate) |
 | `settleEpoch()` | Distribute yield at epoch end |
 
-### State Variables
-
-| Variable | Type | Description |
-|----------|------|-------------|
-| `seniorRate` | uint256 | Fixed senior yield rate (e.g., 4%) |
-| `currentEpoch` | uint256 | Current epoch number |
-| `juniorRatio` | uint256 | Current junior/total ratio |
-| `minJuniorRatio` | uint256 | Minimum allowed junior ratio |
-
-### Events
-
-```solidity
-event EpochSettled(uint256 indexed epoch, int256 totalYield, uint256 seniorYield, int256 juniorYield);
-event SeniorDeposit(address indexed user, uint256 pptAmount, uint256 shares);
-event JuniorDeposit(address indexed user, uint256 pptAmount, uint256 shares);
-```
-
 ---
 
-## Gauge System
+## Gauge System 🚧 (Planned)
 
 ### Purpose
 Manage staking incentives and emission distribution.
 
-### Key Functions
+> This module is planned for Phase 2 deployment.
+
+### Planned Functions
 
 | Function | Description |
 |----------|-------------|
@@ -94,30 +191,16 @@ Manage staking incentives and emission distribution.
 | `claim()` | Claim earned esPAIMON |
 | `updateEmission()` | Update emission rate based on votes |
 
-### State Variables
-
-| Variable | Type | Description |
-|----------|------|-------------|
-| `totalStaked` | uint256 | Total jPPT staked |
-| `emissionRate` | uint256 | Current esPAIMON per second |
-| `boostMultiplier` | mapping | User boost multipliers |
-
-### Events
-
-```solidity
-event Staked(address indexed user, uint256 amount);
-event Unstaked(address indexed user, uint256 amount);
-event RewardClaimed(address indexed user, uint256 amount);
-```
-
 ---
 
-## vePAIMON
+## vePAIMON 🚧 (Planned)
 
 ### Purpose
 Vote-escrow mechanism for governance participation.
 
-### Key Functions
+> This module is planned for Phase 2 deployment.
+
+### Planned Functions
 
 | Function | Description |
 |----------|-------------|
@@ -127,30 +210,16 @@ Vote-escrow mechanism for governance participation.
 | `withdraw()` | Withdraw after lock expires |
 | `vote(gaugeIds, weights)` | Allocate voting power to gauges |
 
-### State Variables
-
-| Variable | Type | Description |
-|----------|------|-------------|
-| `locked` | mapping | User lock amounts and end times |
-| `totalVotingPower` | uint256 | Total system voting power |
-| `gaugeVotes` | mapping | Votes allocated to each gauge |
-
-### Events
-
-```solidity
-event Locked(address indexed user, uint256 amount, uint256 duration, uint256 tokenId);
-event VoteCast(address indexed user, uint256[] gaugeIds, uint256[] weights);
-event Withdrawn(address indexed user, uint256 amount);
-```
-
 ---
 
-## Protection Band
+## Protection Band 🚧 (Planned)
 
 ### Purpose
 Monitor price deviation and trigger protective actions.
 
-### Key Functions
+> This module is planned for Phase 2 deployment. Current implementation uses manual keeper controls.
+
+### Planned Functions
 
 | Function | Description |
 |----------|-------------|
@@ -159,57 +228,9 @@ Monitor price deviation and trigger protective actions.
 | `checkRecovery()` | Check if conditions allow recovery |
 | `resumeNormal()` | Return to normal operations |
 
-### State Variables
-
-| Variable | Type | Description |
-|----------|------|-------------|
-| `bandWidth` | uint256 | Protection band width (default 15%) |
-| `isProtected` | bool | Current protection status |
-| `twapWindow` | uint256 | TWAP calculation window |
-
-### Events
-
-```solidity
-event ProtectionTriggered(uint256 deviation, uint256 timestamp);
-event ProtectionRecovered(uint256 deviation, uint256 timestamp);
-event BandWidthUpdated(uint256 oldWidth, uint256 newWidth);
-```
-
 ---
 
-## Redemption Queue
-
-### Purpose
-Manage multi-channel redemption requests and settlements.
-
-### Key Functions
-
-| Function | Description |
-|----------|-------------|
-| `requestRedemption(shares, channel)` | Submit redemption request |
-| `processQueue()` | Process pending redemptions |
-| `getPosition(user)` | Get user's queue position |
-| `estimateWait(shares)` | Estimate wait time |
-
-### State Variables
-
-| Variable | Type | Description |
-|----------|------|-------------|
-| `queue` | Request[] | Pending redemption requests |
-| `safetyThreshold` | uint256 | Threshold for queue activation |
-| `batchSize` | uint256 | Maximum batch settlement size |
-
-### Events
-
-```solidity
-event RedemptionRequested(address indexed user, uint256 shares, uint8 channel, uint256 queuePosition);
-event RedemptionSettled(address indexed user, uint256 shares, uint256 assets, uint256 fee);
-event QueueProcessed(uint256 requestsProcessed, uint256 assetsDistributed);
-```
-
----
-
-## Module Interactions
+## Module Interactions (Current Implementation)
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -218,16 +239,16 @@ event QueueProcessed(uint256 requestsProcessed, uint256 assetsDistributed);
                              │
          ┌───────────────────┼───────────────────┐
          ↓                   ↓                   ↓
-   ┌──────────┐       ┌──────────┐       ┌──────────┐
-   │  Prime   │       │ Tranche  │       │  Gauge   │
-   │  Vault   │←─────→│  Vault   │←─────→│  System  │
-   └────┬─────┘       └────┬─────┘       └────┬─────┘
-        │                  │                  │
-        ↓                  ↓                  ↓
-   ┌──────────┐       ┌──────────┐       ┌──────────┐
-   │Redemption│       │Protection│       │ vePAIMON │
-   │  Queue   │←─────→│   Band   │←─────→│          │
-   └──────────┘       └──────────┘       └──────────┘
+   ┌──────────┐       ┌──────────────┐    ┌──────────────┐
+   │   PPT    │       │ Redemption   │    │    Asset     │
+   │ (Vault)  │←─────→│   Manager    │←──→│  Controller  │
+   └────┬─────┘       └──────┬───────┘    └──────────────┘
+        │                    │
+        │                    ↓
+        │             ┌──────────────┐
+        └────────────→│  Redemption  │
+                      │   Voucher    │
+                      └──────────────┘
 ```
 
 ## Contract Addresses

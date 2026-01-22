@@ -1,5 +1,9 @@
 # Authorized Market Maker (AMP) System
 
+> **⚠️ Implementation Status: PLANNED**
+>
+> The AMP (Authorized Market Maker) system described in this document is part of the Phase 2 roadmap. Current release does not include on-chain AMP qualification, tiering, or performance monitoring. Market making activities are managed through off-chain agreements.
+
 ## Design Purpose
 
 Enables professional market makers to arbitrage within rules, enhancing market depth and price efficiency, but must be institutionalized to prevent it from becoming a run accelerator.
