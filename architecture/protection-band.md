@@ -6,7 +6,7 @@
 
 ## Weakly Coupled Pricing Model
 
-PPT maintains two concurrent prices:
+PP maintains two concurrent prices:
 
 | Price Type | Description | Determination |
 |------------|-------------|---------------|
@@ -110,7 +110,7 @@ Single-point price readings are vulnerable to manipulation:
 2. D_t exceeds 15% threshold
 3. T+0 channel automatically suspends
 4. Users can still exit via T+7 or Queue
-5. Arbitrageurs buy cheap PPT
+5. Arbitrageurs buy cheap PP
 6. Price gradually recovers
 7. When D_t < 15%, T+0 resumes
 

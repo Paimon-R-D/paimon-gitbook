@@ -6,9 +6,9 @@
 |-------|------------|------------------|--------|
 | **M0** | Paimon Prime | Prime Vault, Two-Channel Redemption, NAV Calculation | ✅ Implemented |
 | **M1** | Launchpad | Asset Onboarding, Hard Gate Review, Soft Scoring | 🚧 In Progress |
-| **M2** | DEX Launch | PPT/USDC Trading Pair, Liquidity Incentives | Planned |
-| **M3** | Tranche Launch | sPPT/jPPT Tiering, Epoch Settlement | Planned |
-| **M4** | Mining Launch | jPPT Gauge, esPAIMON Emission | Planned |
+| **M2** | DEX Launch | PP/USDC Trading Pair, Liquidity Incentives | Planned |
+| **M3** | Tranche Launch | sPP/jPP Tiering, Epoch Settlement | Planned |
+| **M4** | Mining Launch | jPP Gauge, esPAIMON Emission | Planned |
 | **M5** | Governance Launch | vePAIMON, Voting System, Protocol Fee Sharing | Planned |
 | **M6** | Full Cycle | AMP System, Protection Band Automation, Plugin System | Planned |
 | **M7** | Evolution | v4 Hooks, Compliance Gating, Cross-chain Expansion | Planned |
@@ -52,10 +52,10 @@
 
 ### M2: DEX Launch
 
-**Objective**: Enable secondary market trading for PPT
+**Objective**: Enable secondary market trading for PP
 
 **Deliverables**:
-- PPT/USDC liquidity pool deployment
+- PP/USDC liquidity pool deployment
 - Initial liquidity provision
 - Trading interface integration
 - Basic LP incentives
@@ -72,7 +72,7 @@
 **Objective**: Introduce yield stratification products
 
 **Deliverables**:
-- Tranche Vault contracts (sPPT/jPPT)
+- Tranche Vault contracts (sPP/jPP)
 - Epoch settlement mechanism
 - Priority repayment logic
 - Junior ratio constraints
@@ -89,7 +89,7 @@
 **Objective**: Activate token emission and staking incentives
 
 **Deliverables**:
-- jPPT Gauge deployment
+- jPP Gauge deployment
 - esPAIMON emission system
 - Vesting tier selection
 - Boost mechanism
@@ -217,8 +217,8 @@ M0 (Paimon Prime) ✅
 | M0 | TVL | $10M |
 | M1 | Assets Onboarded | 3 qualified assets |
 | M2 | Daily Volume | $1M |
-| M3 | Tranche Utilization | 50% of PPT |
-| M4 | Staking Rate | 30% of jPPT |
+| M3 | Tranche Utilization | 50% of PP |
+| M4 | Staking Rate | 30% of jPP |
 | M5 | Voting Participation | 20% of vePAIMON |
 | M6 | AMP Count | 5 active AMPs |
 | M7 | v4 Hook Adoption | 3 custom hooks |

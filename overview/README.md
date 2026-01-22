@@ -11,16 +11,16 @@ Constructing a three-tier closed-loop architecture that deeply integrates real r
 | Tier | Features | Core Outputs |
 |------|----------|--------------|
 | **Launchpad** | Compliance-driven issuance and access screening | Audited On-Chain Assets |
-| **Prime Vault** | ERC-4626 Asset Aggregation and NAV Management | PPT Share Token |
+| **Prime Vault** | ERC-4626 Asset Aggregation and NAV Management | PP Share Token |
 | **DEX + Vote** | Secondary Market Liquidity and Governance Incentives | Price Discovery + Yield Distribution |
 
 ## Key Innovations
 
 ### Yield Tiering (Tranche)
-PPT holders may choose Senior (sPPT, fixed 4% yield) or Junior (jPPT, risk-bearing for leveraged returns), catering to diverse risk preferences.
+PP holders may choose Senior (sPP, fixed 4% yield) or Junior (jPP, risk-bearing for leveraged returns), catering to diverse risk preferences.
 
 ### vePAIMON Governance Model
-PAIMON may be locked into vePAIMON to obtain time-weighted governance power for gauge voting, protocol parameter signaling, and value-return mechanisms. PAIMON can be acquired through multiple paths, including ecosystem allocations, market activity, and protocol incentives (e.g., jPPT staking rewards).
+PAIMON may be locked into vePAIMON to obtain time-weighted governance power for gauge voting, protocol parameter signaling, and value-return mechanisms. PAIMON can be acquired through multiple paths, including ecosystem allocations, market activity, and protocol incentives (e.g., jPP staking rewards).
 
 ### Tiered Liquidity Budget
 - **L1 (Instant)**: T+0 emergency liquidity

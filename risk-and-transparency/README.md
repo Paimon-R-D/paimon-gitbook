@@ -6,7 +6,7 @@
 |-----------|-------------|---------------------|
 | **Valuation Risk** | Outdated or conflicting NAV input data | Multi-source verification, audit cycle constraints, outlier exclusion |
 | **Liquidity Risk** | Redemption surges exceeding budgeted capacity | Layered liquidity, two-channel redemptions with approval, quota management |
-| **Market Manipulation** | PPT pool depth may be insufficient, making prices susceptible to manipulation | TWAP sampling, buffer trigger, NAV disregarding short-term prices |
+| **Market Manipulation** | PP pool depth may be insufficient, making prices susceptible to manipulation | TWAP sampling, buffer trigger, NAV disregarding short-term prices |
 | **Governance Attacks** | Vote-buying leading to poor-quality assets being listed | Layered governance, hard thresholds non-voting coverage, timelock |
 | **Smart Contract Risks** | Code vulnerabilities leading to fund losses | Multi-round audits, bug bounties, phased rollout |
 | **Underlying Asset Risks** | RWA/Private Equity/Fund Credit/Market Risk | Launchpad hard thresholds, continuous disclosure, diversified allocation |
@@ -24,7 +24,7 @@
 ### Scenario: Significant NAV Decline
 
 1. **Underlying asset impairment** → NAV downward adjustment via AssetController
-2. **PPT market price may react prematurely** → Discount widens
+2. **PP market price may react prematurely** → Discount widens
 3. **Keeper intervention** → May reduce quotas or pause redemptions (Protection Band automation planned for Phase 2)
 4. **Ongoing disclosure** → Market receives updated information
 5. **Asset disposal completed** → NAV stabilizes → Quotas restored → Normal operations resume
@@ -190,9 +190,9 @@ Audit reports will be made publicly available upon completion. Subscribe to our 
 
 Users should understand:
 
-1. **PPT is not a stablecoin** - NAV fluctuates with underlying assets
+1. **PP is not a stablecoin** - NAV fluctuates with underlying assets
 2. **Instant liquidity is not guaranteed** - Redemptions are subject to quota availability and approval thresholds
 3. **Large redemptions require approval** - Amounts exceeding thresholds (50K standard, 30K emergency) need keeper approval
-4. **Junior tranche (jPPT) has leverage risk** - Can lose entire principal *(Phase 2 feature)*
+4. **Junior tranche (jPP) has leverage risk** - Can lose entire principal *(Phase 2 feature)*
 5. **Governance decisions affect returns** - Participate or accept outcomes
 6. **Smart contract risk exists** - Despite audits, bugs are possible

@@ -4,18 +4,18 @@
 
 | Module | Function | Status |
 |--------|----------|--------|
-| **PPT (Prime Vault)** | ERC-4626 standard asset aggregation, NAV calculation, quota management | ✅ Implemented |
+| **PP (Prime Vault)** | ERC-4626 standard asset aggregation, NAV calculation, quota management | ✅ Implemented |
 | **RedemptionManager** | Two-channel redemptions (T+0, T+7), approval workflow, settlement | ✅ Implemented |
 | **AssetController** | Asset value updates, delayed settlement management | ✅ Implemented |
 | **RedemptionVoucher** | ERC-721 NFT for delayed redemption claims | ✅ Implemented |
-| **Tranche Vault** | sPPT/jPPT Yield Stratification, Epoch Settlement | 🚧 Planned |
-| **Gauge System** | jPPT Staking, esPAIMON Emission, Boost Calculation | 🚧 Planned |
+| **Tranche Vault** | sPP/jPP Yield Stratification, Epoch Settlement | 🚧 Planned |
+| **Gauge System** | jPP Staking, esPAIMON Emission, Boost Calculation | 🚧 Planned |
 | **vePAIMON** | Token Locking, Voting Weight Calculation, Protocol Fee Sharing | 🚧 Planned |
 | **Protection Band** | Automated deviation monitoring, T+0 suspension trigger | 🚧 Planned |
 
 ---
 
-## PPT (Prime Vault) ✅
+## PP (Prime Vault) ✅
 
 ### Purpose
 Central asset management vault implementing ERC-4626 standard. Issues PP (Paimon Prime) tokens representing proportional claims on vault assets.
@@ -159,7 +159,7 @@ event VoucherBurned(uint256 indexed tokenId);
 ## Tranche Vault 🚧 (Planned)
 
 ### Purpose
-Split PPT yield into senior (fixed) and junior (variable) tranches.
+Split PP yield into senior (fixed) and junior (variable) tranches.
 
 > This module is planned for Phase 2 deployment.
 
@@ -167,10 +167,10 @@ Split PPT yield into senior (fixed) and junior (variable) tranches.
 
 | Function | Description |
 |----------|-------------|
-| `depositSenior(pptAmount)` | Deposit PPT to receive sPPT |
-| `depositJunior(pptAmount)` | Deposit PPT to receive jPPT |
-| `redeemSenior(shares)` | Redeem sPPT for PPT (priority) |
-| `redeemJunior(shares)` | Redeem jPPT for PPT (subordinate) |
+| `depositSenior(pptAmount)` | Deposit PP to receive sPP |
+| `depositJunior(pptAmount)` | Deposit PP to receive jPP |
+| `redeemSenior(shares)` | Redeem sPP for PP (priority) |
+| `redeemJunior(shares)` | Redeem jPP for PP (subordinate) |
 | `settleEpoch()` | Distribute yield at epoch end |
 
 ---
@@ -186,8 +186,8 @@ Manage staking incentives and emission distribution.
 
 | Function | Description |
 |----------|-------------|
-| `stake(amount)` | Stake jPPT into gauge |
-| `unstake(amount)` | Remove staked jPPT |
+| `stake(amount)` | Stake jPP into gauge |
+| `unstake(amount)` | Remove staked jPP |
 | `claim()` | Claim earned esPAIMON |
 | `updateEmission()` | Update emission rate based on votes |
 
@@ -240,7 +240,7 @@ Monitor price deviation and trigger protective actions.
          ┌───────────────────┼───────────────────┐
          ↓                   ↓                   ↓
    ┌──────────┐       ┌──────────────┐    ┌──────────────┐
-   │   PPT    │       │ Redemption   │    │    Asset     │
+   │    PP    │       │ Redemption   │    │    Asset     │
    │ (Vault)  │←─────→│   Manager    │←──→│  Controller  │
    └────┬─────┘       └──────┬───────┘    └──────────────┘
         │                    │

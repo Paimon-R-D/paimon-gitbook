@@ -2,11 +2,11 @@
 
 > **⚠️ Implementation Status: PLANNED**
 >
-> The Tranche Vault (sPPT/jPPT yield stratification) described in this document is part of the Phase 2 roadmap. Current release includes only the Prime Vault (PPT) functionality. Tranche Vault will be deployed as a separate contract layer on top of PPT.
+> The Tranche Vault (sPP/jPP yield stratification) described in this document is part of the Phase 2 roadmap. Current release includes only the Prime Vault (PP) functionality. Tranche Vault will be deployed as a separate contract layer on top of PP.
 
 ## Design Motivation
 
-The underlying asset yield in the PPT is approximately 6% APY. This is a real, exogenous yield, yet it lacks appeal in the DeFi market.
+The underlying asset yield in the PP is approximately 6% APY. This is a real, exogenous yield, yet it lacks appeal in the DeFi market.
 
 **Core challenge**: How to offer higher yields to risk-seeking users without increasing underlying asset risk?
 
@@ -14,22 +14,22 @@ The underlying asset yield in the PPT is approximately 6% APY. This is a real, e
 
 ## Tranche Vault Structure
 
-Tranche Vault is an independent contract layer built on top of PPT, splitting PPT's yield into two tranches:
+Tranche Vault is an independent contract layer built on top of PP, splitting PP's yield into two tranches:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                          Tranche Vault                           │
-│            (Independent Contract, Holds PPT as Assets)            │
+│            (Independent Contract, Holds PP as Assets)            │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   Users deposit PPT                                              │
+│   Users deposit PP                                              │
 │        │                                                        │
 │        ↓                                                        │
 │   Choose share class                                            │
 │        │                                                        │
 │   ┌────┴────┐                                                   │
 │   ↓         ↓                                                   │
-│  sPPT      jPPT                                                 │
+│  sPP      jPP                                                 │
 │ Senior    Junior                                                │
 │                                                                 │
 │ • Fixed 4% yield*    • Floating yield (all residual)             │
@@ -46,34 +46,34 @@ Tranche Vault is an independent contract layer built on top of PPT, splitting PP
 
 ## Yield Distribution Mechanism
 
-**Allocation Priority**: sPPT receives fixed returns first, while jPPT receives the remaining portion.
+**Allocation Priority**: sPP receives fixed returns first, while jPP receives the remaining portion.
 
 ### Formula
 
-Let V represent the total value of PPT held by the Vault, r_s denote the proportion of sPPT, r_j = 1 − r_s denote the proportion of jPPT, and Y_total denote the total yield of PPT.
+Let V represent the total value of PP held by the Vault, r_s denote the proportion of sPP, r_j = 1 − r_s denote the proportion of jPP, and Y_total denote the total yield of PP.
 
-- Y_sPPT = 4% (Fixed)
+- Y_sPP = 4% (Fixed)
 
 $$
-Y_{jPPT}=\frac{Y_{total}-Y_{sPPT}\cdot r_s}{r_j}
+Y_{jPP}=\frac{Y_{total}-Y_{sPP}\cdot r_s}{r_j}
 $$
 
-### Scenario Analysis (Assuming sPPT:jPPT = 70:30)
+### Scenario Analysis (Assuming sPP:jPP = 70:30)
 
-| Total PPT Return | sPPT Yield | jPPT Return | Explanation |
+| Total PP Return | sPP Yield | jPP Return | Explanation |
 |------------------|------------|-------------|-------------|
-| 10% | 4% | 24% | Bull Market, jPPT Gains Significant Leverage |
+| 10% | 4% | 24% | Bull Market, jPP Gains Significant Leverage |
 | 8% | 4% | 17.3% | Normal preference |
 | 6% | 4% | 10.7% | Base Scenario |
 | 4% | 4% | 4% | Break-even point |
-| 2% | 4% | -2.7% | jPPT begins to incur losses |
-| 0% | 4% | -9.3% | jPPT bears all downside risk |
+| 2% | 4% | -2.7% | jPP begins to incur losses |
+| 0% | 4% | -9.3% | jPP bears all downside risk |
 
-**Key Features**: jPPT provides a safety cushion for sPPT, absorbing downside volatility; in return, jPPT gains leveraged returns during uptrends.
+**Key Features**: jPP provides a safety cushion for sPP, absorbing downside volatility; in return, jPP gains leveraged returns during uptrends.
 
 ## Epoch Settlement Mechanism
 
-PPT's NAV fluctuates continuously, while Tranche Vault employs fixed-cycle settlements:
+PP's NAV fluctuates continuously, while Tranche Vault employs fixed-cycle settlements:
 
 ```
 Epoch 1           Epoch 2           Epoch 3
@@ -85,16 +85,16 @@ Change             Change             Change
     │                 │                 │
     ↓                 ↓                 ↓
 Distribute         Distribute         Distribute
-Yield (sPPT first) Yield (sPPT first) Yield (sPPT first)
-Residual to jPPT   Residual to jPPT   Residual to jPPT
+Yield (sPP first) Yield (sPP first) Yield (sPP first)
+Residual to jPP   Residual to jPP   Residual to jPP
 ```
 
 ### Settlement Steps
 
-1. At the end of each Epoch, calculate the change in PPT NAV held by the Vault
-2. Calculate sPPT's earned yield: 4% ÷ 52 × r_s × V_s
-3. The remaining amount (positive or negative) is fully allocated to jPPT
-4. If the remainder is negative, deduct it from the net value of jPPT shares
+1. At the end of each Epoch, calculate the change in PP NAV held by the Vault
+2. Calculate sPP's earned yield: 4% ÷ 52 × r_s × V_s
+3. The remaining amount (positive or negative) is fully allocated to jPP
+4. If the remainder is negative, deduct it from the net value of jPP shares
 
 ## Entries and Exits
 
@@ -102,30 +102,30 @@ Residual to jPPT   Residual to jPPT   Residual to jPPT
 
 | Operation | Rule |
 |-----------|------|
-| PPT → sPPT | Anytime, calculated based on current Vault net value |
-| PPT → jPPT | At any time, calculate shares based on current Vault NAV |
+| PP → sPP | Anytime, calculated based on current Vault net value |
+| PP → jPP | At any time, calculate shares based on current Vault NAV |
 
 ### Redemption
 
 | Operation | Rules |
 |-----------|-------|
-| sPPT → PPT | Queued redemption, **with priority over jPPT** |
-| jPPT → PPT | Queued redemption, lower priority than sPPT |
-| Staked jPPT | Must first unstake |
+| sPP → PP | Queued redemption, **with priority over jPP** |
+| jPP → PP | Queued redemption, lower priority than sPP |
+| Staked jPP | Must first unstake |
 
 ### Priority Repayment Implementation
 
 ```
 Redemption Queue Processing Order
 
-1. Process all sPPT redemption requests
-2. If liquidity remains, process jPPT redemption requests
+1. Process all sPP redemption requests
+2. If liquidity remains, process jPP redemption requests
 3. Any excess enters the waiting queue
 ```
 
 ## Risk Control: Junior Layer Safety Buffer
 
-**Issue**: If the jPPT ratio is too low, it cannot provide sufficient protection for sPPT.
+**Issue**: If the jPP ratio is too low, it cannot provide sufficient protection for sPP.
 
 **Mechanism**: Minimum Junior Ratio Constraint
 
@@ -133,32 +133,32 @@ Redemption Queue Processing Order
 |------------|-------|-------------|
 | Target Junior Ratio | 30% | System Design Target |
 | Minimum Junior Ratio | 20% | Mandatory Lower Limit |
-| Trigger Action | Pause new sPPT deposits | Prevent excessive leverage |
+| Trigger Action | Pause new sPP deposits | Prevent excessive leverage |
 | Resumption Criteria | Junior ratio returns to 25% | Includes buffer range |
 
 ### Extreme Scenario
 
-If PPT NAV continues to decline, causing jPPT NAV to reach zero:
+If PP NAV continues to decline, causing jPP NAV to reach zero:
 
-1. jPPT holders lose all principal
-2. sPPT begins directly bearing PPT downside risk
-3. At this point, sPPT effectively degrades to a standard PPT exposure
+1. jPP holders lose all principal
+2. sPP begins directly bearing PP downside risk
+3. At this point, sPP effectively degrades to a standard PP exposure
 4. Emergency state is triggered, suspending all new deposits
 
 ## Integration with Governance System
 
-**Incentive acquisition path (non-governance)**: jPPT staking incentives → esPAIMON (vesting) → PAIMON. 
+**Incentive acquisition path (non-governance)**: jPP staking incentives → esPAIMON (vesting) → PAIMON. 
 
 Governance participation requires **PAIMON locked into vePAIMON**.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                 Full Path from jPPT to Governance                │
+│                 Full Path from jPP to Governance                │
 └─────────────────────────────────────────────────────────────────┘
 
-jPPT Holder
+jPP Holder
       │
-      ↓ Stake into jPPT Gauge
+      ↓ Stake into jPP Gauge
       │
       ↓
 Earn esPAIMON (mining rewards, non-transferable)
@@ -186,6 +186,6 @@ Gauge Voting              Protocol Fee Share
 |-----------|--------------|----------------|
 | Revenue Sources | Token Subsidies (Endogenous) | Underlying Assets + Tiered Amplification (Exogenous) |
 | High-Yield Mechanism | Money Printing | Risk redistribution |
-| Downside Protection | None | jPPT as a Safety Net |
+| Downside Protection | None | jPP as a Safety Net |
 | Liquidation risk | Death spiral | No Lending, No Liquidation |
-| Worst-case scenario | Systemic Collapse | jPPT becomes worthless, sPPT degrades to PPT |
+| Worst-case scenario | Systemic Collapse | jPP becomes worthless, sPP degrades to PP |

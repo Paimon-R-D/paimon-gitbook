@@ -1,10 +1,10 @@
 # Prime Vault: ERC-4626 Aggregation Layer
 
-## PPT and NAV
+## PP and NAV
 
-**PPT (Paimon Prime Token)** is an ERC-20 share token issued by Prime Vault, representing the holder's proportional claim on the Vault's net assets.
+**PP (Paimon Prime)** is an ERC-20 share token issued by Prime Vault, representing the holder's proportional claim on the Vault's net assets.
 
-> **Implementation Note**: The token symbol in the deployed contract is `PP` (PP Token). References to "PPT" in this documentation refer to the same token.
+> **Implementation Note**: The token symbol in the deployed contract is `PP` (Paimon Prime).
 
 ### NAV Calculation Formula
 
@@ -15,7 +15,7 @@ $$
 Where:
 - **V_assets**: Fair value of assets held by Prime (grossValue from disclosures/audits)
 - **V_liabilities**: Total redemption liabilities + withdrawable fees
-- **S_effective**: Effective supply = Total PPT supply - Locked shares (shares pending settlement)
+- **S_effective**: Effective supply = Total PP supply - Locked shares (shares pending settlement)
 
 ### Deposit Constraints
 

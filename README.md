@@ -19,15 +19,15 @@ This document outlines the mechanism design and system architecture of the Paimo
 | Tier | Features | Core Outputs |
 |------|----------|--------------|
 | **Launchpad** | Compliance-driven issuance and access screening | Audited On-Chain Assets |
-| **Prime Vault** | ERC-4626 Asset Aggregation and NAV Management | PPT Share Token |
+| **Prime Vault** | ERC-4626 Asset Aggregation and NAV Management | PP Share Token |
 | **DEX + Vote** | Secondary Market Liquidity and Governance Incentives | Price Discovery + Yield Distribution |
 
 ## Key Innovations
 
-- **Yield Tiering (Tranche)**: PPT holders may choose Senior (sPPT, fixed 4% yield) or Junior (jPPT, risk-bearing for leveraged returns), catering to diverse risk preferences
+- **Yield Tiering (Tranche)**: PP holders may choose Senior (sPP, fixed 4% yield) or Junior (jPP, risk-bearing for leveraged returns), catering to diverse risk preferences
 - **vePAIMON Governance Model**: PAIMON may be locked into vePAIMON to obtain time-weighted governance power for gauge voting, protocol parameter signaling, and value-return mechanisms
 - **Tiered Liquidity Budget**: L1 (Instant)/L2 (T+7)/L3 (Quarterly), aligning with real asset liquidation cycles
-- **Three-Channel Redemption Mechanism**: T+0 (Penalized)/T+7 (Standard)/Queued Redemption, balancing liquidity demand and system security
+- **Two-Channel Redemption Mechanism**: T+0 (Penalized)/T+7 (Standard) with approval workflow, balancing liquidity demand and system security
 - **Discount/Premium Protection Band**: Automatic suspension of emergency redemptions at ±15% deviation to prevent run feedback loops
 
 ## Target Users
@@ -42,7 +42,7 @@ This document outlines the mechanism design and system architecture of the Paimo
 
 - [Executive Summary](overview/README.md) - High-level protocol overview
 - [System Architecture](architecture/README.md) - Technical architecture details
-- [Tranche Vault](products/README.md) - sPPT/jPPT yield stratification
+- [Tranche Vault](products/README.md) - sPP/jPP yield stratification
 - [Token Economics](governance/tokenomics.md) - PAIMON tokenomics
 - [Risk Disclosure](risk-and-transparency/README.md) - Known risks and mitigations
 

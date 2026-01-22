@@ -26,7 +26,7 @@ Paimon does not pursue the goal of enabling all assets to "exit instantly like E
 
 1. **Liquidity is a budget, not a right**: Instant exit is a limited resource that must be rationally allocated through cost mechanisms
 
-2. **Weakly Coupled Pricing**: The intrinsic value (NAV) of PPTs and market price (P_mkt) are permitted to diverge, converging under controlled rules
+2. **Weakly Coupled Pricing**: The intrinsic value (NAV) of PPs and market price (P_mkt) are permitted to diverge, converging under controlled rules
 
 3. **Transparency over promises**: Publicly disclose all liquidity budgets and queue statuses, allowing the market to price risk premiums autonomously
 

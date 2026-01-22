@@ -35,7 +35,7 @@ event NAVUpdated(uint256 oldNAV, uint256 newNAV, uint256 timestamp);
 ### Tranche Vault Events
 
 ```solidity
-event EpochSettled(uint256 epoch, int256 yield, uint256 sPPTYield, int256 jPPTYield);
+event EpochSettled(uint256 epoch, int256 yield, uint256 sPPYield, int256 jPPYield);
 event TrancheDeposit(address indexed user, bool isSenior, uint256 pptAmount, uint256 shares);
 event TrancheRedemption(address indexed user, bool isSenior, uint256 shares, uint256 pptAmount);
 ```
@@ -55,7 +55,7 @@ event EmergencyRedemptionResumed(uint256 timestamp);
 
 | Metric | Update Frequency | Source |
 |--------|------------------|--------|
-| PPT Total Supply | Per block | Prime Vault |
+| PP Total Supply | Per block | Prime Vault |
 | NAV | Weekly (minimum) | Oracle + Audit |
 | DEX Price (P_mkt) | Per block | DEX Pool |
 | Deviation (D_t) | Per block | Calculated |
@@ -68,8 +68,8 @@ event EmergencyRedemptionResumed(uint256 timestamp);
 Automated weekly report includes:
 
 1. **Supply Metrics**
-   - Total PPT supply
-   - sPPT / jPPT breakdown
+   - Total PP supply
+   - sPP / jPP breakdown
    - PAIMON circulating supply
    - Unvested esPAIMON amounts
 

@@ -12,7 +12,7 @@
 
 | Parameter | Setting |
 |-----------|---------|
-| Primary Pair | PPT/USDC |
+| Primary Pair | PP/USDC |
 | Market Making | Constant product (x·y=k) |
 | Oracle | Standard TWAP |
 
@@ -50,7 +50,7 @@ Depth/fee baseline     Risk signal integration     Compliance gating, custom ora
 
 ### Gauge Integration
 
-The PPT/USDC pool has its own Gauge that receives emissions based on vePAIMON voting allocation. This creates a direct link between governance participation and liquidity depth.
+The PP/USDC pool has its own Gauge that receives emissions based on vePAIMON voting allocation. This creates a direct link between governance participation and liquidity depth.
 
 ## Arbitrage Mechanics
 
@@ -58,8 +58,8 @@ The PPT/USDC pool has its own Gauge that receives emissions based on vePAIMON vo
 
 | Scenario | Action | Effect |
 |----------|--------|--------|
-| P_mkt < NAV (discount) | Buy PPT → Redemption → Acquire underlying assets | Pushes up P_mkt, narrows discount |
-| P_mkt > NAV (premium) | Subscribe PPT → Sell | Pressure down P_mkt, narrow premium |
+| P_mkt < NAV (discount) | Buy PP → Redemption → Acquire underlying assets | Pushes up P_mkt, narrows discount |
+| P_mkt > NAV (premium) | Subscribe PP → Sell | Pressure down P_mkt, narrow premium |
 
 ### Constraints
 
@@ -88,8 +88,8 @@ This prevents unlimited arbitrage from depleting liquidity while still enabling 
 ## Integration Points
 
 ### With Prime Vault
-- Subscription creates PPT supply
-- Redemption removes PPT supply
+- Subscription creates PP supply
+- Redemption removes PP supply
 - Both affect DEX liquidity
 
 ### With Protection Band
@@ -116,5 +116,5 @@ This prevents unlimited arbitrage from depleting liquidity while still enabling 
 ### Cross-Chain Expansion
 
 - Bridge integration for multi-chain liquidity
-- Unified PPT across chains
+- Unified PP across chains
 - Cross-chain arbitrage opportunities

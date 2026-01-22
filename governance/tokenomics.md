@@ -19,17 +19,17 @@
 
 ## 1. Token System Overview
 
-> **Brief Description**: The governance model is centered on **PAIMON locked into vePAIMON**. Participation incentives (e.g., jPPT staking) may distribute **esPAIMON**, which can vest into **PAIMON** and optionally be locked into **vePAIMON** to join governance.
+> **Brief Description**: The governance model is centered on **PAIMON locked into vePAIMON**. Participation incentives (e.g., jPP staking) may distribute **esPAIMON**, which can vest into **PAIMON** and optionally be locked into **vePAIMON** to join governance.
 
 ### Token Stack
 
 | Token/Certificate | Type | Total Supply/Cap | Core Function | Issuing Entity |
 |-------------------|------|------------------|---------------|----------------|
-| **PPT** | ERC-20 (ERC-4626 Vault Shares) | Varies with Prime Vault size | Prime Vault Shares, NAV Pricing, Redemption Three-Channel Access, DEX Trading Assets | Prime Vault (ERC-4626) |
-| **sPPT** | Tranche Shares | Varies with Tranche Vault size | Fixed-income tier (e.g., 4%), priority repayment, no governance participation (see [Tranche Vault](../products/README.md)) | Tranche Vault |
-| **jPPT** | Tranche Share | Varies with Tranche Vault size | Exposure to downside risk for leveraged returns; can be staked to earn esPAIMON (see [Tranche Vault](../products/README.md)) | Tranche Vault |
+| **PP** | ERC-20 (ERC-4626 Vault Shares) | Varies with Prime Vault size | Prime Vault Shares, NAV Pricing, Redemption Three-Channel Access, DEX Trading Assets | Prime Vault (ERC-4626) |
+| **sPP** | Tranche Shares | Varies with Tranche Vault size | Fixed-income tier (e.g., 4%), priority repayment, no governance participation (see [Tranche Vault](../products/README.md)) | Tranche Vault |
+| **jPP** | Tranche Share | Varies with Tranche Vault size | Exposure to downside risk for leveraged returns; can be staked to earn esPAIMON (see [Tranche Vault](../products/README.md)) | Tranche Vault |
 | **PAIMON** | ERC-20 | 10,000,000,000 (Hard Cap) | Governance, staking, liquidity incentives, external incentive assets, protocol value capture vehicle | EmissionManager + Treasury |
-| **esPAIMON** | ERC-20 Vesting | Subject to emission budget/quota constraints | jPPT Staking Mining Rewards; Can be vested to unlock as PAIMON; Also usable for Boost | Reward Distributor / Treasury |
+| **esPAIMON** | ERC-20 Vesting | Subject to emission budget/quota constraints | jPP Staking Mining Rewards; Can be vested to unlock as PAIMON; Also usable for Boost | Reward Distributor / Treasury |
 | **vePAIMON** | ve (Voting Escrow) | No cap | Gauge Voting, Emission Allocation, Protocol Fee Sharing (per governance charter) | Voting Escrow (vePAIMON) |
 
 ### Token Allocation
@@ -72,7 +72,7 @@ Phase B decay is solidified on-chain with 236 lookup tables, `EmissionManager.ge
 
 Metric Recommendations:
 - **Prime TVL Increment** (Week-over-Week)
-- **DEX Depth/Volume** (TWAP volume, depth, and slippage for PPT/USDC pools)
+- **DEX Depth/Volume** (TWAP volume, depth, and slippage for PP/USDC pools)
 - **Premium/Discount Deviation** D_t = |P_mkt/NAV - 1| (for risk control reduction, not boosting)
 
 Adjustment Strategy:
@@ -84,8 +84,8 @@ Adjustment Strategy:
 
 | Channel | Default Allocation | Sink | Description |
 |---------|-------------------|------|-------------|
-| Prime Growth Incentive | 40% | Prime/Tranche Related Gauge | Skewed toward risk-taking activities (e.g., jPPT staking) |
-| DEX/LP Incentives | 40% | Gauge for PPT/USDC Pools | Guide secondary liquidity depth and price discovery |
+| Prime Growth Incentive | 40% | Prime/Tranche Related Gauge | Skewed toward risk-taking activities (e.g., jPP staking) |
+| DEX/LP Incentives | 40% | Gauge for PP/USDC Pools | Guide secondary liquidity depth and price discovery |
 | Ecosystem / Gauge Incentives | 20% | Treasury / Incentive Budget | Launchpad partnerships, external incentives |
 
 Unused budget is returned to the Treasury via `reclaimUnused(week)` after the cooling-off period.
@@ -114,7 +114,7 @@ Unused budget is returned to the Treasury via `reclaimUnused(week)` after the co
 
 #### Boost Inputs
 - **Base**: baseline multiplier granted to all eligible positions
-- **Activity / Stake Boost**: derived from qualifying activity (LP, jPPT staking, etc.)
+- **Activity / Stake Boost**: derived from qualifying activity (LP, jPP staking, etc.)
 - **Governance / ve Boost**: derived from vePAIMON voting power
 
 #### Eligibility Rules
@@ -196,7 +196,7 @@ Monthly `reportIncome(income)`:
 
 Weekly automated report publishing:
 - Circulating supply (including unvested amounts)
-- PPT/NAV/Deviation and DEX Depth/Volume
+- PP/NAV/Deviation and DEX Depth/Volume
 - Emission Utilization Rate
 - Gauge weightings and KPIs
 - Treasury asset table

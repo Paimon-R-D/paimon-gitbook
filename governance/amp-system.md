@@ -23,8 +23,8 @@ AMP executes arbitrage in the following scenarios:
 
 | Scenario | Action | Effect |
 |----------|--------|--------|
-| P_mkt < NAV (discount) | Buy PPT → Redemption → Acquire underlying assets | Pushes up P_mkt, narrows discount |
-| P_mkt > NAV (premium) | Subscribe PPT → Sell | Pressure down P_mkt, narrow premium |
+| P_mkt < NAV (discount) | Buy PP → Redemption → Acquire underlying assets | Pushes up P_mkt, narrows discount |
+| P_mkt > NAV (premium) | Subscribe PP → Sell | Pressure down P_mkt, narrow premium |
 
 ### Constraints
 

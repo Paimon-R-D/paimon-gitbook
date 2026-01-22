@@ -93,7 +93,7 @@ vePAIMON positions are represented as NFTs (veNFT), enabling:
 
 ### How Gauges Work
 
-1. Each incentivized activity (LP pool, jPPT staking, etc.) has a Gauge
+1. Each incentivized activity (LP pool, jPP staking, etc.) has a Gauge
 2. vePAIMON holders vote to allocate emissions across Gauges
 3. Votes are tallied weekly (Epoch-based)
 4. Emissions flow to Gauges based on vote share

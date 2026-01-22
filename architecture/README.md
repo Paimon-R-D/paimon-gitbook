@@ -15,7 +15,7 @@
 ┌─────────────────────────────────────────────────────────────────┐
 │                    Liquidity Layer (DEX Pools)                   │
 │                                                                 │
-│   PPT/USDC Pool ←──────→ Arbitrageurs ←──────→ NAV Anchoring     │
+│   PP/USDC Pool ←──────→ Arbitrageurs ←──────→ NAV Anchoring     │
 │                                                                 │
 └────────────────────────────┬────────────────────────────────────┘
                              │ Secondary Trading
@@ -23,7 +23,7 @@
 ┌─────────────────────────────────────────────────────────────────┐
 │                    Aggregation Layer (Prime Vault)               │
 │                                                                 │
-│   User Assets ──→ ERC-4626 Vault ──→ PPT Share Token             │
+│   User Assets ──→ ERC-4626 Vault ──→ PP Share Token             │
 │                     │                                           │
 │              ┌──────┴──────┐                                   │
 │              ↓             ↓                                   │
@@ -60,12 +60,12 @@ The entry point for alternative assets into the Paimon ecosystem. Assets must pa
 → [Learn more about Launchpad](launchpad.md)
 
 ### Aggregation Layer (Prime Vault)
-The core asset management layer built on ERC-4626 standard. Manages NAV calculation, PPT issuance, and the redemption state machine.
+The core asset management layer built on ERC-4626 standard. Manages NAV calculation, PP issuance, and the redemption state machine.
 
 → [Learn more about Prime Vault](prime-vault.md)
 
 ### Liquidity Layer (DEX)
-Secondary market for PPT trading. Provides price discovery mechanism and allows market-based liquidity through arbitrage.
+Secondary market for PP trading. Provides price discovery mechanism and allows market-based liquidity through arbitrage.
 
 → [Learn more about DEX Strategy](../products/dex-strategy.md)
 
