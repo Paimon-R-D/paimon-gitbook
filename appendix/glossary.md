@@ -46,7 +46,6 @@
 
 | Term | Definition |
 |------|------------|
-| **AMP** | Authorized Market Participant, professional market makers with special privileges and obligations |
 | **P_mkt** | Market price of PP in the DEX pool |
 | **D_t** | Deviation, the absolute percentage difference between P_mkt and NAV |
 | **Nitro** | External incentive system allowing third parties to add rewards to Gauges |

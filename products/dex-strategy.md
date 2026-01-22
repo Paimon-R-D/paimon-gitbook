@@ -54,7 +54,7 @@ The PP/USDC pool has its own Gauge that receives emissions based on vePAIMON vot
 
 ## Arbitrage Mechanics
 
-### Role of AMP (Authorized Market Participants)
+### Market Arbitrage
 
 | Scenario | Action | Effect |
 |----------|--------|--------|
@@ -100,7 +100,6 @@ This prevents unlimited arbitrage from depleting liquidity while still enabling 
 ### With Governance
 - Gauge voting directs emissions
 - Parameter governance (fees, caps)
-- AMP access approval
 
 ## Future Considerations
 

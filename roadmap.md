@@ -10,7 +10,7 @@
 | **M3** | Tranche Launch | sPP/jPP Tiering, Epoch Settlement | Planned |
 | **M4** | Mining Launch | jPP Gauge, esPAIMON Emission | Planned |
 | **M5** | Governance Launch | vePAIMON, Voting System, Protocol Fee Sharing | Planned |
-| **M6** | Full Cycle | AMP System, Protection Band Automation, Plugin System | Planned |
+| **M6** | Full Cycle | Protection Band Automation, Plugin System | Planned |
 | **M7** | Evolution | v4 Hooks, Compliance Gating, Cross-chain Expansion | Planned |
 
 ## Phase Details
@@ -123,14 +123,12 @@
 **Objective**: Complete the protocol ecosystem
 
 **Deliverables**:
-- AMP system with tiered access
 - Protection Band automation (TWAP monitoring, auto-pause)
 - Plugin system for delegates
 - External incentive (Nitro) support
 - Advanced analytics dashboard
 
 **Success Criteria**:
-- AMPs onboarded and active
 - Protection Band triggers working
 - Plugins deployed
 - Nitro incentives distributed
@@ -203,11 +201,11 @@ M0 (Paimon Prime) ✅
 |-------|-----------|------------|
 | M0 | Smart contract bugs | Multiple audits, bug bounty |
 | M1 | Asset quality issues | Strict hard gate criteria |
-| M2 | Insufficient liquidity | Incentive programs, AMP partners |
+| M2 | Insufficient liquidity | Incentive programs, LP incentives |
 | M3 | Incorrect yield calculation | Extensive testing, formal verification |
 | M4 | Token price volatility | Gradual emission, vesting tiers |
 | M5 | Low governance participation | Incentive alignment, education |
-| M6 | AMP gaming, Protection Band manipulation | Strict monitoring, penalty system |
+| M6 | Protection Band manipulation | Strict monitoring, penalty system |
 | M7 | Regulatory changes | Flexible compliance framework |
 
 ## Success Metrics by Phase
@@ -220,5 +218,5 @@ M0 (Paimon Prime) ✅
 | M3 | Tranche Utilization | 50% of PP |
 | M4 | Staking Rate | 30% of jPP |
 | M5 | Voting Participation | 20% of vePAIMON |
-| M6 | AMP Count | 5 active AMPs |
+| M6 | Plugin Count | 5 active plugins |
 | M7 | v4 Hook Adoption | 3 custom hooks |

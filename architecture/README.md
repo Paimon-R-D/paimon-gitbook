@@ -50,7 +50,6 @@
 | **Prime Users** | Subscription/Redemption Process | NAV growth, underlying asset returns |
 | **LP/Market Maker** | Providing Secondary Market Liquidity | Transaction Fees, Mining Incentives |
 | **Governance participants** | Vote on emission and parameters | Protocol fee sharing, governance rights |
-| **Authorized Market Makers (AMP)** | Professional Arbitrage & Liquidity Provision | Priority Settlement, Fee Discounts |
 
 ## Layer Descriptions
 

@@ -163,4 +163,4 @@ The following cannot be changed by governance voting alone:
 - **Threshold**: 3/5 for standard operations, 4/5 for emergency actions
 - **Rotation**: Annual review with community input
 
-For detailed token mechanics, see [Token Economics](tokenomics.md). For the AMP market maker system, see [AMP System](amp-system.md).
+For detailed token mechanics, see [Token Economics](tokenomics.md).

@@ -24,7 +24,6 @@
 
 * [Governance Structure](governance/README.md)
 * [Token Economics](governance/tokenomics.md)
-* [AMP System](governance/amp-system.md)
 
 ## Risk & Transparency
 
