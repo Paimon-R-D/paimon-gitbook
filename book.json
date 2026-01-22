@@ -1,0 +1,35 @@
+{
+  "title": "Paimon Finance Documentation",
+  "description": "DeFi-Native Liquidity Protocol for Alternative Assets",
+  "author": "Paimon Finance Team",
+  "language": "en",
+  "gitbook": ">=3.0.0",
+  "plugins": [
+    "mathjax",
+    "mermaid-gb3",
+    "-lunr",
+    "-search",
+    "search-pro",
+    "expandable-chapters",
+    "copy-code-button"
+  ],
+  "pluginsConfig": {
+    "mathjax": {
+      "forceSVG": true
+    }
+  },
+  "structure": {
+    "readme": "README.md",
+    "summary": "SUMMARY.md"
+  },
+  "links": {
+    "sidebar": {
+      "Website": "https://paimon.finance",
+      "GitHub": "https://github.com/paimon-finance",
+      "Twitter": "https://twitter.com/PaimonFinance"
+    }
+  },
+  "styles": {
+    "website": "styles/website.css"
+  }
+}
