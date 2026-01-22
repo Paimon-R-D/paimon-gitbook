@@ -48,6 +48,7 @@
 | **P_mkt** | Market price of PPT in the DEX pool |
 | **D_t** | Deviation, the absolute percentage difference between P_mkt and NAV |
 | **Nitro** | External incentive system allowing third parties to add rewards to Gauges |
+| **Weakly Coupled Pricing** | A pricing model where the on-chain market price (P_mkt) is loosely tied to the off-chain NAV, allowing for market-driven price discovery within the protection band (±15%) while NAV serves as the ultimate redemption reference |
 
 ## Risk Terms
 

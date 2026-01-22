@@ -129,3 +129,33 @@ The following cannot be changed by governance voting alone:
 | Hard Thresholds | Launchpad custody/audit requirements | Immutable or multi-sig only |
 | Core Safety | Protection band emergency triggers | Multi-sig override only |
 | Supply Cap | 10B PAIMON maximum | Contract immutable |
+
+## Parameter Change Process
+
+### Standard Parameters (Low/Medium Risk)
+
+| Step | Duration | Requirement |
+|------|----------|-------------|
+| 1. Proposal Submission | - | Minimum 10,000 vePAIMON |
+| 2. Discussion Period | 3 days | Community feedback |
+| 3. Voting Period | 5 days | Quorum: 4% of total vePAIMON |
+| 4. Timelock | 24-72h | Based on risk level |
+| 5. Execution | - | Automatic if passed |
+
+### Protected Parameters (High Risk)
+
+| Step | Duration | Requirement |
+|------|----------|-------------|
+| 1. Proposal Submission | - | Risk Committee or 100,000 vePAIMON |
+| 2. Hard-Gate Review | 7 days | Technical and security assessment |
+| 3. Multi-sig Approval | - | 3/5 signatures required |
+| 4. Extended Timelock | 7 days | Public notice period |
+| 5. Execution | - | Multi-sig execution |
+
+### Multi-sig Configuration
+
+- **Signers**: 5 designated key holders (mix of team and community)
+- **Threshold**: 3/5 for standard operations, 4/5 for emergency actions
+- **Rotation**: Annual review with community input
+
+For detailed token mechanics, see [Token Economics](tokenomics.md). For the AMP market maker system, see [AMP System](amp-system.md).

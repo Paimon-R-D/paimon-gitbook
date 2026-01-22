@@ -21,8 +21,8 @@
 | Token/Certificate | Type | Total Supply/Cap | Core Function | Issuing Entity |
 |-------------------|------|------------------|---------------|----------------|
 | **PPT** | ERC-20 (ERC-4626 Vault Shares) | Varies with Prime Vault size | Prime Vault Shares, NAV Pricing, Redemption Three-Channel Access, DEX Trading Assets | Prime Vault (ERC-4626) |
-| **sPPT** | Tranche Shares | Varies with Tranche Vault size | Fixed-income tier (e.g., 4%), priority repayment, no governance participation | Tranche Vault |
-| **jPPT** | Tranche Share | Varies with Tranche Vault size | Exposure to downside risk for leveraged returns; can be staked to earn esPAIMON | Tranche Vault |
+| **sPPT** | Tranche Shares | Varies with Tranche Vault size | Fixed-income tier (e.g., 4%), priority repayment, no governance participation (see [Tranche Vault](../products/README.md)) | Tranche Vault |
+| **jPPT** | Tranche Share | Varies with Tranche Vault size | Exposure to downside risk for leveraged returns; can be staked to earn esPAIMON (see [Tranche Vault](../products/README.md)) | Tranche Vault |
 | **PAIMON** | ERC-20 | 10,000,000,000 (Hard Cap) | Governance, staking, liquidity incentives, external incentive assets, protocol value capture vehicle | EmissionManager + Treasury |
 | **esPAIMON** | ERC-20 Vesting | Subject to emission budget/quota constraints | jPPT Staking Mining Rewards; Can be vested to unlock as PAIMON; Also usable for Boost | Reward Distributor / Treasury |
 | **vePAIMON** | ve (Voting Escrow) | No cap | Gauge Voting, Emission Allocation, Protocol Fee Sharing (per governance charter) | Voting Escrow (vePAIMON) |

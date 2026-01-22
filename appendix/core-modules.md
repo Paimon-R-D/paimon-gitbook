@@ -232,13 +232,4 @@ event QueueProcessed(uint256 requestsProcessed, uint256 assetsDistributed);
 
 ## Contract Addresses
 
-> **Note**: Addresses will be published after mainnet deployment.
-
-| Contract | Network | Address |
-|----------|---------|---------|
-| Prime Vault | TBD | TBD |
-| Tranche Vault | TBD | TBD |
-| Gauge System | TBD | TBD |
-| vePAIMON | TBD | TBD |
-| Protection Band | TBD | TBD |
-| Redemption Queue | TBD | TBD |
+> **Note**: Contract addresses will be published upon mainnet deployment. All deployed contracts will undergo security audits and be verified on block explorers. Check our [official documentation](https://docs.paimon.finance) for the latest deployment information.

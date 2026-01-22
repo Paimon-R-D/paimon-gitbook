@@ -194,18 +194,21 @@ All critical decisions are recorded immutably:
 
 ### Oracle Providers
 
-| Provider | Purpose | Backup |
-|----------|---------|--------|
-| TBD | Price feeds | Multi-source |
-| TBD | NAV verification | Manual fallback |
+The protocol utilizes multiple oracle sources to ensure data reliability and manipulation resistance:
 
-### Analytics Partners
+- **Price Feeds**: Aggregated from leading oracle providers with multi-source verification
+- **NAV Verification**: Cross-validated against custodian reports and on-chain data
+- **Fallback Mechanisms**: Manual override capability via multi-sig for emergency situations
 
-| Partner | Service |
-|---------|---------|
-| TBD | Dashboard hosting |
-| TBD | Subgraph indexing |
-| TBD | Alert distribution |
+### Infrastructure Partners
+
+The protocol leverages battle-tested infrastructure:
+
+- **Indexing**: The Graph protocol for historical data queries
+- **Monitoring**: Real-time alerting via Discord and Telegram integrations
+- **Dashboard**: Self-hosted analytics with public API access
+
+Specific provider details will be announced closer to mainnet launch.
 
 ## Transparency Commitments
 

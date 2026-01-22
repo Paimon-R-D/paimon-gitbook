@@ -46,9 +46,13 @@ Prime categorizes assets into three tiers based on liquidation cycles:
 
 ## HYD: Third-Tier High-Yield Allocation
 
-**HYD (High-Yield Distribution)** represents the third layer of allocation within the Prime portfolio, providing exposure to high-yield alternative assets.
+**HYD (High-Yield Distribution)** represents the third layer (L3) of allocation within the Prime portfolio, typically comprising **55-65%** of total assets. This tier provides exposure to high-yield alternative assets including:
 
-> **Important Notice**: HYD **is not** a stablecoin; its value fluctuates based on the performance of underlying assets.
+- Real World Assets (RWA)
+- Private Equity
+- Private Fund interests
+
+> **Important Notice**: HYD **is not** a stablecoin; its value fluctuates based on the performance of underlying assets. See [Glossary](../appendix/glossary.md) for detailed token definitions.
 
 ### Operational Commitments
 

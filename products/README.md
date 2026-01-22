@@ -1,4 +1,4 @@
-# Tranche Vault: Yield Stratification & Leverage Amplification
+# Tranche Vault
 
 ## Design Motivation
 
@@ -28,10 +28,14 @@ Tranche Vault is an independent contract layer built on top of PPT, splitting PP
 │  sPPT      jPPT                                                 │
 │ Senior    Junior                                                │
 │                                                                 │
-│ • Fixed 4% yield     • Floating yield (all residual)             │
+│ • Fixed 4% yield*    • Floating yield (all residual)             │
 │ • Senior repayment   • Subordinated repayment                    │
 │ • Lower risk         • Higher risk, higher upside                │
 │ • No governance      • Can stake to earn esPAIMON                │
+│                                                                 │
+│ * The 4% fixed rate is a governance-adjustable parameter.       │
+│   Rate changes require Medium Risk governance approval and      │
+│   apply only to new deposits after the change takes effect.     │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```

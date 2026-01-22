@@ -85,6 +85,24 @@ Only    Pause  Pause  │
          Normal ────────┘
 ```
 
+### Risk Level Trigger Thresholds
+
+| Level | Deviation (D_t) | L1+L2 Utilization | Queue Depth | Response |
+|-------|-----------------|-------------------|-------------|----------|
+| **Normal** | < 8% | < 70% | < 5% TVL | Continue operations |
+| **Low** | 8-12% | 70-85% | 5-10% TVL | Warning issued, increased monitoring |
+| **Medium** | 12-15% | 85-95% | 10-20% TVL | Partial pause, T+0 suspended |
+| **High** | > 15% | > 95% | > 20% TVL | Full pause, emergency response activated |
+
+### Response Timeline
+
+| Phase | Duration | Actions |
+|-------|----------|---------|
+| **Detection** | 0-1h | Automated alerts, initial assessment |
+| **Immediate** | 1-24h | Risk committee review, protective measures |
+| **Short-term** | 1-7d | Root cause analysis, stakeholder communication |
+| **Recovery** | 7-30d | Remediation, gradual return to normal |
+
 ## Valuation Risk Deep Dive
 
 ### NAV Data Sources
@@ -148,12 +166,15 @@ These parameters **cannot** be changed by governance voting alone:
 
 ### Audit Status
 
-| Component | Auditor | Status |
-|-----------|---------|--------|
-| Prime Vault | TBD | Planned |
-| Tranche Vault | TBD | Planned |
-| vePAIMON | TBD | Planned |
-| Emission System | TBD | Planned |
+All core contracts will undergo comprehensive security audits before mainnet deployment. The audit process includes:
+
+1. **Pre-audit**: Internal code review and testing
+2. **Primary audit**: Engagement with a reputable security firm
+3. **Remediation**: Address all identified issues
+4. **Re-audit**: Verification of fixes
+5. **Public disclosure**: Full audit reports published
+
+Audit reports will be made publicly available upon completion. Subscribe to our [official channels](https://paimon.finance) for audit announcements.
 
 ### Bug Bounty Program
 
