@@ -25,8 +25,9 @@
   "links": {
     "sidebar": {
       "Website": "https://paimon.finance",
-      "GitHub": "https://github.com/paimon-finance",
-      "Twitter": "https://twitter.com/PaimonFinance"
+      "X (Twitter)": "https://x.com/Paimon_Finance",
+      "GitHub": "https://github.com/Paimon-R-D",
+      "Telegram": "https://t.me/paimon_rwa"
     }
   },
   "styles": {

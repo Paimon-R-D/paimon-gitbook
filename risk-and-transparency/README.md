@@ -175,7 +175,7 @@ All core contracts will undergo comprehensive security audits before mainnet dep
 4. **Re-audit**: Verification of fixes
 5. **Public disclosure**: Full audit reports published
 
-Audit reports will be made publicly available upon completion. Subscribe to our [official channels](https://paimon.finance) for audit announcements.
+Audit reports will be made publicly available upon completion. Subscribe to our official channels ([X](https://x.com/Paimon_Finance), [Telegram](https://t.me/paimon_rwa)) for audit announcements.
 
 ### Bug Bounty Program
 

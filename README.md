@@ -51,5 +51,6 @@ This document outlines the mechanism design and system architecture of the Paimo
 ## Contact & Resources
 
 - Website: [paimon.finance](https://paimon.finance)
-- GitHub: [github.com/paimon-finance](https://github.com/paimon-finance)
-- Twitter: [@PaimonFinance](https://twitter.com/PaimonFinance)
+- X (Twitter): [@Paimon_Finance](https://x.com/Paimon_Finance)
+- GitHub: [Paimon-R-D](https://github.com/Paimon-R-D)
+- Telegram: [paimon_rwa](https://t.me/paimon_rwa)
