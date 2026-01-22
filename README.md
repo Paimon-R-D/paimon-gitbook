@@ -1,6 +1,6 @@
 # Paimon Finance
 
-## DeFi-Native Liquidity Protocol for Alternative Assets
+## DeFi-Native Liquidity Protocol for RWA
 
 ---
 
