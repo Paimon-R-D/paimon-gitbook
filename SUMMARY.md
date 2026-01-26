@@ -29,6 +29,7 @@
 
 * [Risk Disclosure](risk-and-transparency/README.md)
 * [Observability](risk-and-transparency/observability.md)
+* [Audit Reports](risk-and-transparency/audit-reports.md)
 
 ## Roadmap
 
