@@ -6,7 +6,10 @@ Paimon Finance is committed to security and transparency. All smart contracts un
 
 | Auditor | Date | Scope | Report |
 |---------|------|-------|--------|
-| CertiK | January 19, 2026 | Vault Smart Contracts | [Download PDF](../.gitbook/assets/audit-report-2026-01.pdf) |
+| CertiK | January 19, 2026 | Prime Vault smart contracts | [Download PDF](../.gitbook/assets/audit-report-2026-01.pdf) |
+| SlowMist | March 2026 | Paimon (PPT) BSC contracts | [Download PDF](<../.gitbook/assets/Paimon(PPT) BSC Contracts - SlowMist Audit Report.pdf>) |
+
+The Prime Vault contracts (`PPT`, `RedemptionManager`, `AssetController`, `RedemptionVoucher`, `PPTTypes`, `IPPTContracts`) have undergone two independent third-party audits. Both reports are published in full above.
 
 ## CertiK Audit Summary
 
@@ -29,6 +32,16 @@ Paimon Finance is committed to security and transparency. All smart contracts un
 
 **Total Findings: 33** | **Resolved: 31** | **Acknowledged: 2**
 
+## SlowMist Audit Summary
+
+**Audit Details:**
+- **Type**: Smart-contract security audit (Paimon BSC contracts — PPT scope)
+- **Ecosystem**: BNB Smart Chain (EVM compatible)
+- **Methods**: Manual review + static analysis
+- **Language**: Solidity
+
+For the full list of findings, severity distribution, remediation status and re-test results, refer to the published PDF report linked above.
+
 ## Audited Contracts (Prime Vault scope)
 
 - `AssetController.sol`
@@ -38,9 +51,14 @@ Paimon Finance is committed to security and transparency. All smart contracts un
 - `RedemptionVoucher.sol`
 - `IPPTContracts.sol`
 
-## Pre-IPO / Compliance Layer
+## Pre-IPO / Compliance Layer (External Audit Pending)
 
-The EIP-3643 contract suite (`EIP3643Token`, `ShadowERC20`, `TokenBridge`, `KYCAggregator`, `SimpleKYCProvider`) and the Launchpad / Points / Badge contracts (`LaunchpadDrop`, `LaunchpadSettlement`, `PaimonTreasury`, `PaimonBadge`, `PointsHubV2`, `StakingModule`) are deployed on BSC mainnet and have been internally reviewed. External audit reports for this scope will be published as they are completed.
+The Prime Vault scope above is covered by **two** independent external audits (CertiK + SlowMist). The remaining production contracts have not yet completed external audit:
+
+- EIP-3643 contract suite — `EIP3643Token`, `ShadowERC20`, `TokenBridge`, `KYCAggregator`, `SimpleKYCProvider`
+- Launchpad / Points / Badge — `LaunchpadDrop`, `LaunchpadSettlement`, `PaimonTreasury`, `PaimonBadge`, `PointsHubV2`, `StakingModule`, `LPStakingModule`, `PointsRedemption`
+
+These contracts are deployed on BSC mainnet and have been **internally reviewed**. External audit reports for this scope will be published as they are completed.
 
 ## Ongoing Security
 
