@@ -29,17 +29,22 @@ Paimon Finance is committed to security and transparency. All smart contracts un
 
 **Total Findings: 33** | **Resolved: 31** | **Acknowledged: 2**
 
-## Audited Contracts
+## Audited Contracts (Prime Vault scope)
 
-- AssetController.sol
-- PPT.sol
-- PPTTypes.sol
-- RedemptionManager.sol
-- RedemptionVoucher.sol
-- IPPTContracts.sol
+- `AssetController.sol`
+- `PPT.sol` (deployed as `PP` symbol)
+- `PPTTypes.sol`
+- `RedemptionManager.sol`
+- `RedemptionVoucher.sol`
+- `IPPTContracts.sol`
+
+## Pre-IPO / Compliance Layer
+
+The EIP-3643 contract suite (`EIP3643Token`, `ShadowERC20`, `TokenBridge`, `KYCAggregator`, `SimpleKYCProvider`) and the Launchpad / Points / Badge contracts (`LaunchpadDrop`, `LaunchpadSettlement`, `PaimonTreasury`, `PaimonBadge`, `PointsHubV2`, `StakingModule`) are deployed on BSC mainnet and have been internally reviewed. External audit reports for this scope will be published as they are completed.
 
 ## Ongoing Security
 
-- Continuous monitoring of deployed contracts
+- Continuous monitoring of deployed contracts via the backend event listener (WebSocket + polling + gap-fill)
 - Bug bounty program (coming soon)
-- Regular security reviews for upgrades
+- UUPS upgrade authority gated by multisig + timelock for every proxy
+- Regular security reviews for contract upgrades

@@ -1,5 +1,13 @@
 # DEX Strategy: v2 Launch, v4 Evolution
 
+{% hint style="warning" %}
+**Phase 2 Concept — Not Deployed**
+
+There is **no Paimon DEX contract on BSC mainnet today**. No `PP/USDC` pool, no `xSPCX/USDC` pool, no Gauge / Bribe market is live. xSPCX (the tradable shadow of pSPCX) is currently **freely transferable but does not yet have an official liquidity venue** — secondary trading happens on existing third-party AMMs at LP discretion.
+
+The design below describes the intended phased rollout once governance / token launch occurs.
+{% endhint %}
+
 ## Phase 1: v2-like AMM
 
 ### Reasons for Selection

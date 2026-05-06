@@ -2,9 +2,17 @@
 
 ## PP and NAV
 
-**PP (Paimon Prime)** is an ERC-20 share token issued by Prime Vault, representing the holder's proportional claim on the Vault's net assets.
+**PP (Paimon Prime)** is the share token issued by Prime Vault, representing the holder's proportional claim on the Vault's net assets.
 
-> **Implementation Note**: The token symbol in the deployed contract is `PP` (Paimon Prime).
+{% hint style="info" %}
+**Naming convention used throughout this document**
+- **Contract name / source code**: `PPT` (Paimon Prime Token) — see `src/ppt/PPT.sol`
+- **On-chain ERC-20 `name` / `symbol`**: `PP Token` / `PP` (this is what wallets display)
+- **Standard**: ERC-4626 vault, UUPS upgradeable
+- **BSC mainnet address**: `0x8505c32631034A7cE8800239c08547e0434EdaD9`
+
+Whenever this documentation says "PP", it refers to the same token your wallet shows as `PP`. The internal contract identifier `PPT` is used in audit reports and source code.
+{% endhint %}
 
 ### NAV Calculation Formula
 
@@ -21,8 +29,9 @@ Where:
 
 | Parameter | Value | Description |
 |-----------|-------|-------------|
-| **Minimum Deposit** | 500 tokens | Prevents dust deposits and reduces gas overhead |
-| **Locked Mint Period** | Configurable | New deposits may be locked during accumulation periods |
+| **Minimum Deposit** | 10 tokens (`MIN_DEPOSIT = 10e18`) | Hard-coded in `PPTTypes.sol` to prevent dust deposits |
+| **Locked Mint Assets** | Tracked per period via `lockedMintAssets` | Recently minted underlying may be temporarily ineligible for redemption coverage |
+| **Virtual Offset** | `1e18` | Anti-inflation-attack offset applied in `sharePrice()` calculation |
 
 ### Key Principle
 
@@ -30,38 +39,52 @@ Short-term DEX pool prices **shall not serve as** direct inputs for NAV. NAV mus
 
 ## Tiered Liquidity Model
 
-Prime categorizes assets into three tiers based on liquidation cycles:
+Prime categorizes assets into three liquidity tiers, defined on-chain by the `LiquidityTier` enum (`PPTTypes.sol:37-41`):
 
-| Tier | Name | Liquidity Cycle | Purpose | Typical Assets |
+| Tier | Enum | Liquidity Cycle | Purpose | Typical Assets |
 |------|------|-----------------|---------|----------------|
-| **L1** | Instant Liquidity | T+0 | Emergency Redemption | Stablecoins, highly liquid tokens |
-| **L2** | Standard Liquidity | T+7 | Standard Redemption | Moderately liquid assets, short-term RWA |
-| **L3** | Quarterly Liquidity | T+90 | Long-Term Allocation | Private equity, long-lockup assets |
+| **L1** | `TIER_1_CASH` | Instant (T+0) | Emergency redemption coverage | USDT cash, instantly-liquid stable assets |
+| **L2** | `TIER_2_MMF` | Short (~T+7) | Standard redemption coverage | Money market funds, short-term yield assets (e.g. CashPlus / CASH+) |
+| **L3** | `TIER_3_HYD` | Quarterly+ (T+90 or longer) | Long-duration yield | Private equity, private credit, long-lockup RWA |
+
+{% hint style="info" %}
+**About the name "HYD" in this Tier-3 enum**
+
+The enum value `TIER_3_HYD` stands for **"High-Yield"** — it is a category label for the long-duration tranche of the portfolio, **not** a token symbol. Do not confuse this with the synthetic-asset token of the same name described in some Phase-2 design documents; that token is **not deployed**.
+{% endhint %}
 
 ### Portfolio Allocation
+
+The actual L1/L2/L3 target ratios are **not hard-coded** in the contracts. They are configured at runtime through the off-chain `RebalanceStrategyService` (single-active-strategy pattern) and pushed to `AssetController` as `LayerConfig { targetRatio, minRatio, maxRatio }` values.
+
+The contract layer only enforces two safety thresholds (`PPTTypes.sol:26-27`):
+
+| Constant | Value | Purpose |
+|----------|-------|---------|
+| `LOW_LIQUIDITY_THRESHOLD` | 1500 bps (15 %) | Low-liquidity warning |
+| `CRITICAL_LIQUIDITY_THRESHOLD` | 1000 bps (10 %) | Critical-liquidity warning |
+
+Typical strategy targets (subject to governance / fund manager update):
 
 ```
 ┌─────────────────────────────────────────┐
 │           Prime Vault Portfolio          │
 ├─────────────────────────────────────────┤
-│  L1: Instant Liquidity (Budget-0)  ~5-15%│
-│  ─────────────────────────────────────  │
-│  L2: Standard Liquidity (Budget-7)~25-35%│
-│  ─────────────────────────────────────  │
-│  L3: Quarterly Liquidity (Budget-L)~55-65%│
-│       └── Includes HYD (High-Yield)     │
+│  L1 (TIER_1_CASH)   ~5-15 % typical     │
+│  L2 (TIER_2_MMF)    ~25-35 % typical    │
+│  L3 (TIER_3_HYD)    ~55-65 % typical    │
 └─────────────────────────────────────────┘
 ```
 
-## HYD: Third-Tier High-Yield Allocation
+## L3: Long-Duration Yield Allocation
 
-**HYD (High-Yield Distribution)** represents the third layer (L3) of allocation within the Prime portfolio, typically comprising **55-65%** of total assets. This tier provides exposure to high-yield alternative assets including:
+The Tier-3 sleeve typically holds **55-65 %** of total assets and provides exposure to:
 
-- Real World Assets (RWA)
-- Private Equity
-- Private Fund interests
+- Real World Assets (RWA) with quarterly liquidity windows
+- Private equity / private credit
+- Tokenized fund interests
 
-> **Important Notice**: HYD **is not** a stablecoin; its value fluctuates based on the performance of underlying assets. See [Glossary](../appendix/glossary.md) for detailed token definitions.
+PP itself is **not** a stablecoin; its NAV fluctuates with underlying asset performance.
 
 ### Operational Commitments
 
@@ -90,31 +113,19 @@ Prime Vault implements the ERC-4626 tokenized vault standard, providing:
 
 Paimon extends ERC-4626 with:
 
-- **Tiered redemption channels** (T+0, T+7, Queued)
-- **NAV-based pricing** with protection band integration
-- **Budget-constrained withdrawals**
-- **Queue priority calculation**
+- **Three redemption channels** — `STANDARD` (T+7), `EMERGENCY` (T+0, fee-penalized), `SCHEDULED` (large-window, currently unused but reserved) — see `RedemptionChannel` enum in `PPTTypes.sol:57-61`
+- **NAV-based pricing** via `sharePrice()` with virtual-offset protection against inflation attacks
+- **Budget-constrained withdrawals** via `emergencyQuota` (refreshed by KEEPER) and `standardQuotaRatio` (default 70 % of available liquidity)
+- **Direct redeem disabled** — users must go through `RedemptionManager` so the approval / locking / settlement flow can run
+- **Locked share accounting** — `totalLockedShares` and `lockedSharesOf[user]` track shares pending redemption settlement; these are excluded from `effectiveSupply()` used in NAV math
 
-## State Machine
+## Live Asset Adapters
 
-```
-User Request
-     │
-     ▼
-┌──────────────┐
-│ Check Budget │
-└──────┬───────┘
-       │
-   ┌───┴───┬────────┬─────────┐
-   ▼       ▼        ▼         ▼
-Budget-0  Budget-7  Queue   Rejected
-(T+0)     (T+7)     Entry   (No Budget)
-   │        │         │
-   ▼        ▼         ▼
-Instant   Pending   Waiting
-Execute   7 days    In Queue
-   │        │         │
-   ▼        ▼         ▼
-Complete  Execute   Batch
-          After 7d  Settlement
-```
+Prime Vault holds underlying assets directly when they are simple ERC-20s, and uses adapters for assets with off-chain settlement flows:
+
+| Adapter | Mainnet address | Underlying | Notes |
+|---------|-----------------|------------|-------|
+| `CashPlusAdapter` | `0xf3a17a5362b6f5b2bCB1AE0C0DE86b70e1ae4a53` | CashPlus Vault `0x1775504c5873e179Ea2f8ABFcE3861EC74D159bc` | External RWA money-market fund (CASH+ token, ~$107). Subscription requires **off-chain SPV approval**; backend probes `claim()` via `eth_call` once per hour and auto-advances `SUBSCRIPTION_LINKED → SPV_APPROVED → CONFIRMED` |
+| `PaimonOracleAdapter` | — | Multi-asset price oracle | Aggregates Chainlink + custodian NAV feeds with circuit-breaker checks |
+
+See [Redemption Mechanism](redemption-mechanism.md) for the full request → approval → settlement state machine.

@@ -10,17 +10,20 @@
 ## Architecture
 
 * [System Architecture](architecture/README.md)
-* [Launchpad](architecture/launchpad.md)
+* [Launchpad: 4-Layer Drop](architecture/launchpad.md)
 * [Paimon Prime Vault](architecture/prime-vault.md)
 * [Redemption Mechanism](architecture/redemption-mechanism.md)
-* [Protection Band](architecture/protection-band.md)
+* [EIP-3643 Compliance](architecture/eip3643-compliance.md)
+* [Protection Band (Phase 2)](architecture/protection-band.md)
 
 ## Products
 
-* [Tranche Vault](products/README.md)
-* [DEX Strategy](products/dex-strategy.md)
+* [Pre-IPO SPV Tokens (pSPCX / xSPCX)](products/pre-ipo-spv.md)
+* [Points and Badges](products/points-and-badge.md)
+* [Tranche Vault (Phase 2)](products/README.md)
+* [DEX Strategy (Phase 2)](products/dex-strategy.md)
 
-## Governance
+## Governance (Phase 2)
 
 * [Governance Structure](governance/README.md)
 * [Token Economics](governance/tokenomics.md)

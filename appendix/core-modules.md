@@ -1,256 +1,185 @@
 # Core Modules
 
-## Module Overview
+This page lists every contract module that is part of the Paimon protocol design, separated by deployment status.
 
-| Module | Function | Status |
-|--------|----------|--------|
-| **PP (Prime Vault)** | ERC-4626 standard asset aggregation, NAV calculation, quota management | ✅ Implemented |
-| **RedemptionManager** | Two-channel redemptions (T+0, T+7), approval workflow, settlement | ✅ Implemented |
-| **AssetController** | Asset value updates, delayed settlement management | ✅ Implemented |
-| **RedemptionVoucher** | ERC-721 NFT for delayed redemption claims | ✅ Implemented |
-| **Tranche Vault** | sPP/jPP Yield Stratification, Epoch Settlement | 🚧 Planned |
-| **Gauge System** | jPP Staking, esPAIMON Emission, Boost Calculation | 🚧 Planned |
-| **vePAIMON** | Token Locking, Voting Weight Calculation, Protocol Fee Sharing | 🚧 Planned |
-| **Protection Band** | Automated deviation monitoring, T+0 suspension trigger | 🚧 Planned |
+## ✅ Live on BSC Mainnet
 
----
+### Product Line A — Paimon Prime (PP)
 
-## PP (Prime Vault) ✅
+| Module | Mainnet address | Source |
+|--------|-----------------|--------|
+| `PPT` (Prime Vault, ERC-4626) | `0x8505c32631034A7cE8800239c08547e0434EdaD9` | `src/ppt/PPT.sol` |
+| `RedemptionManager` | `0xd614a6fe8C35aC9af4F59cd14849877179cDCdB9` | `src/ppt/RedemptionManager.sol` |
+| `AssetController` | `0x6F5170956132588E9b2844478f1fF1B387573A3D` | `src/ppt/AssetController.sol` |
+| `RedemptionVoucher` (ERC-721) | `0x73F42b0D657785fE844e3BF486Fe1e15fFE13514` | `src/ppt/RedemptionVoucher.sol` |
+| `PaimonOracleAdapter` | `0x6b752F021749D8D82CE6262ADAAf093CFaEa3034` | `src/adapters/PaimonOracleAdapter.sol` |
+| `CashPlusAdapter` | `0xf3a17a5362b6f5b2bCB1AE0C0DE86b70e1ae4a53` | `src/adapters/CashPlusAdapter.sol` |
+| External `CashPlus Vault` | `0x1775504c5873e179Ea2f8ABFcE3861EC74D159bc` | (third party) |
 
-### Purpose
-Central asset management vault implementing ERC-4626 standard. Issues PP (Paimon Prime) tokens representing proportional claims on vault assets.
+### Product Line B — Pre-IPO SPV Tokens
 
-### Key Functions
+| Module | Mainnet address | Source |
+|--------|-----------------|--------|
+| `pSPCX` (EIP3643Token) | `0x6DC9a487bF8Fd047e41AB336003AE6e4FE602646` | `src/eip3643/EIP3643Token.sol` |
+| `xSPCX` (ShadowERC20) | `0x05353Dabf163Fb2fec87f9e0f00f94Eae4AC1631` | `src/eip3643/ShadowERC20.sol` |
+| `TokenBridge` | `0xE4Eeba287494e694DFf63d7723B0A046506C8910` | `src/eip3643/TokenBridge.sol` |
 
-| Function | Description |
-|----------|-------------|
-| `deposit(assets, receiver)` | Deposit underlying assets, receive PP shares (min 500 tokens) |
-| `redeem(shares, receiver, owner)` | Direct redemption (disabled, use RedemptionManager) |
-| `sharePrice()` | Get current NAV per share |
-| `totalAssets()` | Get net asset value (gross - liabilities - fees) |
-| `effectiveSupply()` | Get supply excluding locked shares |
-| `getStandardChannelQuota()` | Get available T+7 redemption quota |
-| `getEmergencyChannelQuota()` | Get available T+0 redemption quota |
+### Compliance Layer
 
-### State Variables
+| Module | Mainnet address | Source |
+|--------|-----------------|--------|
+| `KYCAggregator` | `0xF8DfE25C8C565e057420716F0d2b2905eF8f5227` | `src/eip3643/KYCAggregator.sol` |
+| `SimpleKYCProvider` | `0x2f5503A0D0F9Aba32B82AFbD7395D2096c7FaA2d` | `src/eip3643/SimpleKYCProvider.sol` |
 
-| Variable | Type | Description |
-|----------|------|-------------|
-| `grossValue` | uint256 | Total gross value of underlying assets |
-| `totalRedemptionLiability` | uint256 | Outstanding redemption obligations |
-| `totalLockedShares` | uint256 | Shares locked pending settlement |
-| `emergencyQuota` | uint256 | Available T+0 redemption budget |
-| `lockedMintAssets` | uint256 | Assets locked during accumulation period |
+### Shared Issuance + Reputation Layer
 
-### Events
+| Module | Mainnet address | Source |
+|--------|-----------------|--------|
+| `LaunchpadDrop` V4.2.2 | `0xea088Af719F3238982823fa5eE1C1FaCb2E0e231` | `src/launchpad/LaunchpadDrop.sol` |
+| `LaunchpadSettlement` | `0x9F7eCde85815f3B616C25a54d181F8766c869a90` | `src/launchpad/LaunchpadSettlement.sol` |
+| `PaimonTreasury` (launchpad) | `0xD9312A3fa2ad5cBEA2C2a36124c72f30025AcAC7` | `src/treasury/PaimonTreasury.sol` |
+| `PaimonBadge` (Soulbound ERC-721) | `0x48e9a6846D9722599621aF8A6af0F23b0dB8184a` | `src/launchpad/PaimonBadge.sol` |
+| `PointsHubV2` | `0x748560eaCcd4C01FC29b3B5b72d3b8C85B2B5017` | `src/point/PointsHubV2.sol` |
+| `StakingModule` (PPT staking) | `0x80D9b50f4f1ECdd30CD61E400bf8B9b74eC8795f` | `src/point/StakingModule.sol` |
+| `LPStakingModule` | (deployed) | `src/point/LPStakingModule.sol` |
+| `PointsRedemption` | (deployed) | `src/point/PointsRedemption.sol` |
 
-```solidity
-event Deposit(address indexed sender, address indexed owner, uint256 assets, uint256 shares);
-event GrossValueUpdated(uint256 oldValue, uint256 newValue);
-event EmergencyQuotaUpdated(uint256 oldQuota, uint256 newQuota);
-```
+## 🚧 Phase-2 — Designed, Not Deployed
 
----
+| Module | Purpose | Status |
+|--------|---------|--------|
+| `PAIMON` | Governance + utility ERC-20 | Token not yet issued |
+| `VotingEscrow` (veNFT) | Lock-up + voting power NFT | Not deployed; design currently locks HYD, intended to lock PAIMON |
+| `GaugeController` | Emission allocation voting (7-day epochs, batch voting) | Not deployed |
+| `BribeMarketplace` | External incentives on Gauges | Not deployed |
+| `RewardDistributor` | Merkle-root reward distribution | Not deployed |
+| `DEXFactory` / `DEXPair` | Paimon's own AMM (V2-style with 0.25 % fee, 70 / 30 voter / treasury split) | Not deployed |
+| `Treasury.sol` (RWA-backed CDP) | RWA collateral → mint `HYD` synthetic | Not deployed; experimental design |
+| `HYD` synthetic asset | Low-volatility synthetic backed by RWA | Not deployed |
+| `PSM` (Peg Stability Module) | 1:1 USDC ↔ HYD swap with 0.1 % fee | Not deployed |
+| Tranche Vault (`sPP` / `jPP`) | Senior / Junior yield stratification on top of PP | **No contract written** — design only |
+| Protection Band automation | TWAP-based deviation monitoring + auto T+0 suspension | Not deployed; manual KEEPER intervention only |
 
-## RedemptionManager ✅
+## Module Reference
 
-### Purpose
-Manage two-channel redemption requests with approval workflow and settlement.
+### `PPT` (Prime Vault) — ERC-4626 Live Vault
 
-### Key Functions
+ERC-4626 + UUPS upgradeable + AccessControl + Pausable + ReentrancyGuard.
 
-| Function | Description |
-|----------|-------------|
-| `requestStandardRedemption(shares)` | Request T+7 redemption |
-| `requestEmergencyRedemption(shares)` | Request T+0 redemption (1.5% fee) |
-| `approveRedemption(requestId)` | Keeper approves large redemption |
-| `rejectRedemption(requestId)` | Keeper rejects redemption |
-| `claimRedemption(requestId)` | Claim settled redemption |
-| `cancelRedemption(requestId)` | Cancel pending request |
+#### Key state
 
-### Approval Thresholds
+| Variable | Type | Meaning |
+|----------|------|---------|
+| `assetController` | address | Source of `calculateAssetValue()` for off-vault held assets |
+| `redemptionManager` | address | Source of liability data |
+| `totalRedemptionLiability` | uint256 | Outstanding pending-redemption obligations (deducted from NAV) |
+| `totalLockedShares` | uint256 | Shares locked while pending settlement (excluded from `effectiveSupply`) |
+| `withdrawableRedemptionFees` | uint256 | Accrued fees not yet withdrawn (deducted from NAV) |
+| `emergencyQuota` | uint256 | KEEPER-managed budget for T+0 redemptions |
+| `lockedMintAssets` | uint256 | Recently minted underlying not yet released for redemption |
+| `standardQuotaRatio` | uint256 | bps applied to `totalLiquidity` to derive Standard channel quota (default `7000`) |
+| `lockedSharesOf[user]` | mapping | Per-user locked-share count |
 
-| Channel | Absolute | Ratio |
-|---------|----------|-------|
-| Standard (T+7) | 50,000 tokens | 20% of quota |
-| Emergency (T+0) | 30,000 tokens | 20% of quota |
+#### Key functions
 
-### State Variables
+| Function | Meaning |
+|----------|---------|
+| `deposit(assets, receiver)` | ERC-4626 deposit; reverts if `assets < MIN_DEPOSIT (10e18)` |
+| `mint(shares, receiver)` | ERC-4626 mint; same minimum |
+| `sharePrice()` | NAV per share with virtual offset for inflation-attack protection |
+| `totalAssets()` | Gross assets minus liabilities minus fees (ERC-4626 override) |
+| `effectiveSupply()` | `totalSupply - totalLockedShares` |
+| `grossAssets()` | Cash balance + `assetController.calculateAssetValue()` |
+| `refreshEmergencyQuota`, `restoreEmergencyQuota` | KEEPER-only quota management |
+| `addRedemptionLiability` / `removeRedemptionLiability` | OPERATOR-only (called by RedemptionManager) |
 
-| Variable | Type | Description |
-|----------|------|-------------|
-| `requests` | mapping | All redemption requests by ID |
-| `baseRedemptionFeeBps` | uint256 | Base fee (default 50 bps) |
-| `emergencyPenaltyFeeBps` | uint256 | Emergency penalty (default 100 bps) |
-| `standardApprovalThreshold` | ApprovalThreshold | T+7 approval limits |
-| `emergencyApprovalThreshold` | ApprovalThreshold | T+0 approval limits |
+### `RedemptionManager`
 
-### Events
+Two-channel redemption with approval workflow and settlement.
 
-```solidity
-event RedemptionRequested(uint256 indexed requestId, address indexed user, uint256 shares, uint8 channel);
-event RedemptionApproved(uint256 indexed requestId, address indexed approver);
-event RedemptionRejected(uint256 indexed requestId, address indexed rejecter);
-event RedemptionClaimed(uint256 indexed requestId, address indexed user, uint256 assets, uint256 fee);
-event RedemptionCancelled(uint256 indexed requestId, address indexed user);
-```
+| Function | Meaning |
+|----------|---------|
+| `requestStandardRedemption(shares)` | Open T+7 redemption (auto-approved if below threshold) |
+| `requestEmergencyRedemption(shares)` | Open T+0 redemption (1.5 % fee, capped by emergency quota) |
+| `approveRedemption(requestId)` | KEEPER approves a `PENDING_APPROVAL` request |
+| `rejectRedemption(requestId, reason)` | KEEPER rejects → status becomes `CANCELLED`, emergency quota refunded |
+| `claimRedemption(requestId)` | User claims after settlement time |
+| `cancelRedemption(requestId)` | User cancels before approval |
 
-### Request States
+| Threshold parameter | Default | Purpose |
+|---------------------|---------|---------|
+| `baseRedemptionFeeBps` | 50 (0.5 %) | Standard fee |
+| `emergencyPenaltyFeeBps` | 100 (1 %) | Added on top of base for emergency channel |
+| `standardApprovalAmount` | 50,000 PP | Above this → requires approval |
+| `standardApprovalQuotaRatio` | 2000 bps (20 %) | Or above 20 % of dynamic standard quota → requires approval |
+| `emergencyApprovalAmount` | 30,000 PP | Above this → requires approval |
+| `emergencyApprovalQuotaRatio` | 2000 bps (20 %) | Or above 20 % of emergency quota → requires approval |
 
-```solidity
-enum RedemptionStatus {
-    NONE,
-    PENDING_APPROVAL,  // Awaiting keeper approval
-    PENDING,           // Approved, waiting for settlement time
-    CLAIMABLE,         // Ready to claim
-    SETTLED,           // Claimed
-    REJECTED,          // Rejected by keeper
-    CANCELLED          // Cancelled by user
-}
-```
+### `AssetController`
 
----
+Manages asset value updates and delayed settlement (e.g. CashPlus subscription).
 
-## AssetController ✅
+### `RedemptionVoucher` (ERC-721)
 
-### Purpose
-Manage asset value updates and delayed settlement for sales/purchases.
+Issued when a redemption's expected settlement extends past the standard window. Contains `requestId`, net amount, expected settlement time. Transferable; settle path: `POST /redemptions/{id}/settle-with-voucher`.
 
-### Key Functions
+### `EIP3643Token` (pSPCX)
 
-| Function | Description |
-|----------|-------------|
-| `updateGrossValue(newValue)` | Update total asset value |
-| `createDelayedSettlement(type, amount, deadline)` | Create pending asset settlement |
-| `executeSettlement(settlementId)` | Execute pending settlement |
+UUPS-upgradeable EIP-3643 implementation. Roles: `DEFAULT_ADMIN_ROLE` / `ADMIN_ROLE` / `UPGRADER_ROLE` / `AGENT_ROLE`. Functions: standard ERC-20 + `freezeAddress`, `freezePartialTokens`, `unfreeze`, `forcedTransfer`, `pause`, `setKYCProvider`. See [EIP-3643 Compliance](../architecture/eip3643-compliance.md).
 
-### Events
+### `ShadowERC20` (xSPCX)
 
-```solidity
-event GrossValueUpdated(uint256 oldValue, uint256 newValue);
-event DelayedSettlementCreated(uint256 indexed id, uint8 settlementType, uint256 amount);
-event DelayedSettlementExecuted(uint256 indexed id);
-```
+UUPS-upgradeable plain ERC-20 with single special rule: only `bridge` address can `mint` / `burn`. All other functions standard.
 
----
+### `TokenBridge`
 
-## RedemptionVoucher ✅
+Hub managing N (security, shadow) pairs. Maintains invariant `totalSupply(shadow) = lockedAmount(security) × ratio` per pair. Functions: `createPair`, `deposit` (security → shadow), `redeem` (shadow → security, KYC-gated).
 
-### Purpose
-ERC-721 NFT representing claims on delayed redemptions (issued when settlement exceeds 7 days).
+### `KYCAggregator` + `SimpleKYCProvider`
 
-### Key Functions
+`KYCAggregator.isVerified(addr)` returns OR of all registered providers. `SimpleKYCProvider` is a whitelist managed by operator-mediated `addToWhitelist` / `removeFromWhitelist` calls.
 
-| Function | Description |
-|----------|-------------|
-| `mint(to, requestId, netAmount, settlementTime)` | Issue voucher for delayed redemption |
-| `burn(tokenId)` | Burn voucher after redemption claimed |
-| `getVoucherInfo(tokenId)` | Get voucher details |
+### `LaunchpadDrop` V4.2.2
 
-### Events
+4-Layer drop sale with points-and-USDT double gate. Phases: `Created → QuestActive → Snapshot → Commitment → LayerSale → Settled → Finalized` (or `Cancelled`). See [Launchpad](../architecture/launchpad.md).
 
-```solidity
-event VoucherMinted(uint256 indexed tokenId, address indexed to, uint256 requestId, uint256 netAmount);
-event VoucherBurned(uint256 indexed tokenId);
-```
+### `PaimonBadge`
 
----
+Soulbound ERC-721. Five badge types (`SpacePioneer`, `AIBeliever`, `DualHolder`, `TopReferrer`, `QuestMaster`). Each `(user, type)` mintable once. `batchMint` for drop finalization.
 
-## Tranche Vault 🚧 (Planned)
+### `PointsHubV2`
 
-### Purpose
-Split PP yield into senior (fixed) and junior (variable) tranches.
+Aggregator implementing reward credit (`addReward`, `REWARD_ROLE`) and deduction (`deductPoints`, `DEDUCTOR_ROLE`). Backward-compatible with v1 ABI (`getTotalPoints`, `getClaimablePoints`).
 
-> This module is planned for Phase 2 deployment.
+### `StakingModule` v2.3
 
-### Planned Functions
+PPT staking → points. Two stake types (`Flexible` 1.0×, `Locked` 1.02×–2.00×). Constants: `MIN_STAKE_AMOUNT = 10e18`, `MIN_LOCK_DURATION = 7 days`, `MAX_LOCK_DURATION = 365 days`, `EARLY_UNLOCK_PENALTY_BPS = 5000`, `MAX_STAKES_PER_USER = 100`.
 
-| Function | Description |
-|----------|-------------|
-| `depositSenior(pptAmount)` | Deposit PP to receive sPP |
-| `depositJunior(pptAmount)` | Deposit PP to receive jPP |
-| `redeemSenior(shares)` | Redeem sPP for PP (priority) |
-| `redeemJunior(shares)` | Redeem jPP for PP (subordinate) |
-| `settleEpoch()` | Distribute yield at epoch end |
-
----
-
-## Gauge System 🚧 (Planned)
-
-### Purpose
-Manage staking incentives and emission distribution.
-
-> This module is planned for Phase 2 deployment.
-
-### Planned Functions
-
-| Function | Description |
-|----------|-------------|
-| `stake(amount)` | Stake jPP into gauge |
-| `unstake(amount)` | Remove staked jPP |
-| `claim()` | Claim earned esPAIMON |
-| `updateEmission()` | Update emission rate based on votes |
-
----
-
-## vePAIMON 🚧 (Planned)
-
-### Purpose
-Vote-escrow mechanism for governance participation.
-
-> This module is planned for Phase 2 deployment.
-
-### Planned Functions
-
-| Function | Description |
-|----------|-------------|
-| `lock(amount, duration)` | Lock PAIMON for voting power |
-| `increase(amount)` | Add more PAIMON to existing lock |
-| `extend(newDuration)` | Extend lock duration |
-| `withdraw()` | Withdraw after lock expires |
-| `vote(gaugeIds, weights)` | Allocate voting power to gauges |
-
----
-
-## Protection Band 🚧 (Planned)
-
-### Purpose
-Monitor price deviation and trigger protective actions.
-
-> This module is planned for Phase 2 deployment. Current implementation uses manual keeper controls.
-
-### Planned Functions
-
-| Function | Description |
-|----------|-------------|
-| `checkDeviation()` | Calculate current deviation D_t |
-| `triggerProtection()` | Activate protection mode |
-| `checkRecovery()` | Check if conditions allow recovery |
-| `resumeNormal()` | Return to normal operations |
-
----
-
-## Module Interactions (Current Implementation)
+## Inter-Module Interactions
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         User Actions                             │
-└────────────────────────────┬────────────────────────────────────┘
-                             │
-         ┌───────────────────┼───────────────────┐
-         ↓                   ↓                   ↓
-   ┌──────────┐       ┌──────────────┐    ┌──────────────┐
-   │    PP    │       │ Redemption   │    │    Asset     │
-   │ (Vault)  │←─────→│   Manager    │←──→│  Controller  │
-   └────┬─────┘       └──────┬───────┘    └──────────────┘
-        │                    │
-        │                    ↓
-        │             ┌──────────────┐
-        └────────────→│  Redemption  │
-                      │   Voucher    │
-                      └──────────────┘
+                  ┌─────────────────────────────────────┐
+                  │              User Action            │
+                  └──────────────────┬──────────────────┘
+                                     │
+       ┌─────────────────┬───────────┴───────────┬───────────────────┐
+       ▼                 ▼                       ▼                   ▼
+┌─────────────┐    ┌──────────────┐      ┌──────────────┐   ┌─────────────┐
+│  PPT Vault  │    │   Launchpad  │      │  TokenBridge │   │  Staking    │
+│             │    │     Drop     │      │              │   │   Module    │
+└──────┬──────┘    └──────┬───────┘      └──────┬───────┘   └──────┬──────┘
+       │                  │                     │                  │
+       │  redemption      │  deduct points      │  mint/burn       │  add reward
+       ▼                  ▼                     ▼                  ▼
+┌─────────────┐    ┌──────────────┐      ┌──────────────┐   ┌─────────────┐
+│ Redemption  │    │ PointsHubV2  │      │  pSPCX  ◄──► │   │ PointsHubV2 │
+│  Manager    │    │              │      │  xSPCX       │   │             │
+└──────┬──────┘    └──────────────┘      └──────────────┘   └─────────────┘
+       │                  ▲
+       │                  │  mint badge
+       ▼                  │
+┌─────────────┐    ┌──────┴───────┐
+│  Asset      │    │ PaimonBadge  │
+│  Controller │    │  (Soulbound) │
+└─────────────┘    └──────────────┘
 ```
-
-## Contract Addresses
-
-> **Note**: Contract addresses will be published upon mainnet deployment. All deployed contracts will undergo security audits and be verified on block explorers. Check our [official documentation](https://docs.paimon.finance) for the latest deployment information.

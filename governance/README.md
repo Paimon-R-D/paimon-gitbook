@@ -1,9 +1,18 @@
 # Governance Structure: Tiered Decision-Making
 
-> **⚠️ Partial Implementation**
->
-> - ✅ **Implemented**: Multi-sig approval, keeper roles, basic parameter governance
-> - 🚧 **Planned (Phase 2)**: vePAIMON locking, Gauge voting, on-chain governance proposals
+{% hint style="warning" %}
+**On-Chain DAO Governance — Phase 2, Not Deployed**
+
+`PAIMON` token, `vePAIMON` voting escrow, `GaugeController`, `BribeMarketplace` and `RewardDistributor` are **not deployed on BSC mainnet today**. There is no on-chain proposal/voting/timelock contract live for end users.
+
+**What governs the protocol today (live):**
+- **Admin Multisig** with `ADMIN_ROLE` / `UPGRADER_ROLE` on every UUPS proxy (PPT, RedemptionManager, AssetController, EIP3643Token, ShadowERC20, TokenBridge, LaunchpadDrop, …)
+- **KEEPER service accounts** (`KEEPER_ROLE`) for operational chain calls — approve/reject redemptions, refresh emergency quota, advance Drop phases, settle layers
+- **REBALANCER service accounts** for asset purchase / redeem / liquidation
+- **Off-chain RBAC** in the backend (`SUPER_ADMIN` / `FUND_MANAGER` / `OPERATOR` / `AUDITOR` / `ANALYST`) gating who can trigger on-chain operations
+
+The vePAIMON / Gauge / Bribe model below describes the **target governance structure** for after token issuance.
+{% endhint %}
 
 ## Design Principles
 

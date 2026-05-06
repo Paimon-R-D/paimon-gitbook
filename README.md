@@ -1,50 +1,79 @@
 # Paimon Finance
 
-## DeFi-Native Liquidity Protocol for RWA
+## Compliant On-Chain Access to Alternative Assets
 
 ---
 
 ## Disclaimer
 
-This document outlines the mechanism design and system architecture of the Paimon Protocol and does not constitute investment advice, an offer to sell securities, or a solicitation of an offer to buy securities. The Protocol involves alternative assets such as Real-World Assets (RWA), private equity, and private funds, whose legal attributes, investor suitability, and information disclosure are subject to the regulations of relevant jurisdictions. All parameters are subject to the on-chain contracts and governance charter.
+This document outlines the mechanism design and system architecture of the Paimon Protocol and does not constitute investment advice, an offer to sell securities, or a solicitation of an offer to buy securities. The Protocol involves alternative assets such as Real-World Assets (RWA), pre-IPO equity and private fund interests, whose legal attributes, investor suitability, and information disclosure are subject to the regulations of relevant jurisdictions. All parameters are subject to the on-chain contracts and governance charter.
 
 ---
 
 ## What is Paimon Finance?
 
-**Core Problem**: Tokenized alternative assets (RWAs, private equity, private funds) face a structural dilemma—a fundamental mismatch between on-chain liquidity and the off-chain asset realization cycle. Existing solutions either sacrifice liquidity for compliance or security for instant exit, offering no compromise.
+Paimon Finance is a BSC-deployed protocol that lets DeFi users hold and trade exposure to assets that historically only existed inside traditional finance — money-market funds, pre-IPO equity SPVs, private credit. We do this through **two live product lines** that share a common issuance and reputation infrastructure.
 
-**Paimon's Solution**: Constructing a three-tier closed-loop architecture that deeply integrates real returns from alternative assets with native DeFi liquidity mechanisms:
+### Two Live Products
 
-| Tier | Features | Core Outputs |
-|------|----------|--------------|
-| **Launchpad** | Compliance-driven issuance and access screening | Audited On-Chain Assets |
-| **Prime Vault** | ERC-4626 Asset Aggregation and NAV Management | PP Share Token |
-| **DEX + Vote** | Secondary Market Liquidity and Governance Incentives | Price Discovery + Yield Distribution |
+| Product | What it is | Who it serves | How users hold it |
+|---------|------------|---------------|--------------------|
+| **PP — Paimon Prime Vault** | An ERC-4626 RWA fund holding a tiered portfolio (cash → money market → long-duration RWA) | DeFi users wanting diversified yield exposure with predictable redemption rules | `PP` ERC-20 share token |
+| **Pre-IPO SPV Tokens** | Tokenization of single-issuer private equity SPVs (today: SpaceX SPV) using a two-token EIP-3643 + Shadow ERC-20 design | DeFi users wanting targeted single-asset exposure without going through KYC, plus institutional holders who want full settlement rights | Retail: `xSPCX` (free transfer)<br>Institutional: `pSPCX` (KYC-gated security token) |
 
-## Key Innovations
+Both products are issued through a shared **Launchpad** (4-Layer points-gated drop) and accumulate a shared **on-chain reputation** (Points + Badges).
 
-- **Yield Tiering (Tranche)**: PP holders may choose Senior (sPP, fixed 4% yield) or Junior (jPP, risk-bearing for leveraged returns), catering to diverse risk preferences
-- **vePAIMON Governance Model**: PAIMON may be locked into vePAIMON to obtain time-weighted governance power for gauge voting, protocol parameter signaling, and value-return mechanisms
-- **Tiered Liquidity Budget**: L1 (Instant)/L2 (T+7)/L3 (Quarterly), aligning with real asset liquidation cycles
-- **Two-Channel Redemption Mechanism**: T+0 (Penalized)/T+7 (Standard) with approval workflow, balancing liquidity demand and system security
-- **Discount/Premium Protection Band**: Automatic suspension of emergency redemptions at ±15% deviation to prevent run feedback loops
+### Shared Infrastructure
+
+- **Launchpad** — `LaunchpadDrop` V4 with 4-Layer pricing, points-and-USDT double gate, refund window, and Batch / MerkleClaim settlement modes
+- **Points System** — `PointsHubV2` aggregates points from `StakingModule` (PPT staking, 1×–2× boost), `LPStakingModule`, and future modules
+- **Soulbound Badges** — `PaimonBadge` mints non-transferable achievement NFTs per drop participation
+- **Compliance Layer** — `EIP3643Token` + `ShadowERC20` + `TokenBridge` + `KYCAggregator`, currently used for pSPCX/xSPCX, designed to scale to additional pre-IPO assets
+
+## Mainnet Footprint
+
+| Contract | BSC Mainnet address |
+|----------|---------------------|
+| `PPT` (Prime Vault) | `0x8505c32631034A7cE8800239c08547e0434EdaD9` |
+| `RedemptionManager` | `0xd614a6fe8C35aC9af4F59cd14849877179cDCdB9` |
+| `AssetController` | `0x6F5170956132588E9b2844478f1fF1B387573A3D` |
+| `RedemptionVoucher` | `0x73F42b0D657785fE844e3BF486Fe1e15fFE13514` |
+| `CashPlusAdapter` | `0xf3a17a5362b6f5b2bCB1AE0C0DE86b70e1ae4a53` |
+| `pSPCX` (EIP-3643) | `0x6DC9a487bF8Fd047e41AB336003AE6e4FE602646` |
+| `xSPCX` (Shadow) | `0x05353Dabf163Fb2fec87f9e0f00f94Eae4AC1631` |
+| `TokenBridge` | `0xE4Eeba287494e694DFf63d7723B0A046506C8910` |
+| `LaunchpadDrop` V4 | `0xea088Af719F3238982823fa5eE1C1FaCb2E0e231` |
+| `LaunchpadSettlement` | `0x9F7eCde85815f3B616C25a54d181F8766c869a90` |
+| `PaimonTreasury` | `0xD9312A3fa2ad5cBEA2C2a36124c72f30025AcAC7` |
+| `PaimonBadge` | `0x48e9a6846D9722599621aF8A6af0F23b0dB8184a` |
+| `PointsHubV2` | `0x748560eaCcd4C01FC29b3B5b72d3b8C85B2B5017` |
+| `StakingModule` | `0x80D9b50f4f1ECdd30CD61E400bf8B9b74eC8795f` |
+| `KYCAggregator` | `0xF8DfE25C8C565e057420716F0d2b2905eF8f5227` |
+| `SimpleKYCProvider` | `0x2f5503A0D0F9Aba32B82AFbD7395D2096c7FaA2d` |
+
+## What's *Not* Live (Phase 2 Roadmap)
+
+To avoid confusion: documents such as the Tranche Vault (sPP/jPP), the PAIMON token, vePAIMON governance, esPAIMON vesting, the Paimon DEX, and the automated Protection Band describe **future designs**, not deployed code. Sections covering these features carry a "Phase 2 Concept" banner. Refer to the [Roadmap](roadmap.md) for sequencing.
 
 ## Target Users
 
-- DeFi-native institutions seeking alternative asset exposure
-- Liquidity providers pursuing real yields
-- Issuers aiming to tokenize assets
+- DeFi users seeking diversified RWA yield via PP
+- DeFi users seeking single-asset pre-IPO exposure via xSPCX
+- Institutional holders that need settled, KYC-clean positions in pSPCX
+- Asset issuers seeking a compliant tokenization + distribution venue
 
 ---
 
 ## Quick Navigation
 
-- [Executive Summary](overview/README.md) - High-level protocol overview
-- [System Architecture](architecture/README.md) - Technical architecture details
-- [Tranche Vault](products/README.md) - sPP/jPP yield stratification
-- [Token Economics](governance/tokenomics.md) - PAIMON tokenomics
-- [Risk Disclosure](risk-and-transparency/README.md) - Known risks and mitigations
+- [Executive Summary](overview/README.md)
+- [System Architecture](architecture/README.md)
+- [Paimon Prime Vault (PP)](architecture/prime-vault.md) — ERC-4626 RWA fund
+- [Pre-IPO SPV Tokens (pSPCX / xSPCX)](products/pre-ipo-spv.md) — SpaceX SPV tokenization
+- [Launchpad: 4-Layer Drop](architecture/launchpad.md)
+- [EIP-3643 Compliance](architecture/eip3643-compliance.md)
+- [Points and Badges](products/points-and-badge.md)
+- [Risk Disclosure](risk-and-transparency/README.md)
 
 ---
 

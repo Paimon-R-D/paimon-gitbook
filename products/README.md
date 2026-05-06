@@ -1,8 +1,14 @@
 # Tranche Vault
 
-> **⚠️ Implementation Status: PLANNED**
->
-> The Tranche Vault (sPP/jPP yield stratification) described in this document is part of the Phase 2 roadmap. Current release includes only the Prime Vault (PP) functionality. Tranche Vault will be deployed as a separate contract layer on top of PP.
+{% hint style="warning" %}
+**Phase 2 Concept — Not Deployed**
+
+This document describes a **future design**. There is **no Tranche Vault contract on BSC mainnet today** and no `sPP` / `jPP` / `esPAIMON` token has been issued. The entire mechanism below (Senior/Junior split, Epoch settlement, esPAIMON staking incentive) is a design proposal subject to change.
+
+For products that are **live on mainnet today**, see:
+- [Paimon Prime Vault (PP)](../architecture/prime-vault.md) — ERC-4626 RWA fund
+- [Pre-IPO SPV Tokens (pSPCX / xSPCX)](pre-ipo-spv.md) — SpaceX SPV tokenization
+{% endhint %}
 
 ## Design Motivation
 

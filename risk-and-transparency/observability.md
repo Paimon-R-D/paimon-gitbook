@@ -23,30 +23,105 @@ Minimum disclosure requirements by asset class:
 
 ## On-Chain Events
 
-### Prime Vault Events
+The full event surface is the canonical telemetry of Paimon protocols — every event below is emitted by a deployed contract. Tranche / Protection-Band / Gauge events are **not** emitted because the corresponding contracts are not deployed.
+
+### Prime Vault (`PPT`)
 
 ```solidity
-event Deposit(address indexed user, uint256 assets, uint256 shares);
-event RedemptionRequested(address indexed user, uint256 shares, uint8 channel);
-event RedemptionSettled(address indexed user, uint256 assets, uint256 fee);
-event NAVUpdated(uint256 oldNAV, uint256 newNAV, uint256 timestamp);
+event Deposit(address indexed sender, address indexed owner, uint256 assets, uint256 shares);
+event SharesLocked(address indexed owner, uint256 shares);
+event SharesUnlocked(address indexed owner, uint256 shares);
+event SharesBurned(address indexed owner, uint256 shares);
+event SelfBurn(address indexed owner, uint256 shares);
+event RedemptionFeeAdded(uint256 fee);
+event RedemptionFeeReduced(uint256 fee);
+event EmergencyQuotaRefreshed(uint256 amount);
+event EmergencyQuotaRestored(uint256 amount);
+event EmergencyQuotaReduced(uint256 amount);
+event RedemptionLiabilityAdded(uint256 amount);
+event RedemptionLiabilityRemoved(uint256 amount);
+event LockedMintAssetsReset(uint256 oldAmount);
+event AssetControllerUpdated(address indexed oldController, address indexed newController);
+event RedemptionManagerUpdated(address indexed oldManager, address indexed newManager);
+event StandardQuotaRatioUpdated(uint256 oldRatio, uint256 newRatio);
+event PendingApprovalSharesAdded(address indexed owner, uint256 shares);
+event PendingApprovalSharesRemoved(address indexed owner, uint256 shares);
+event PendingApprovalSharesConverted(address indexed owner, uint256 shares);
+event PPTUpgraded(address indexed newImplementation, uint256 timestamp, uint256 blockNumber);
 ```
 
-### Tranche Vault Events
+### Redemption Manager
 
 ```solidity
-event EpochSettled(uint256 epoch, int256 yield, uint256 sPPYield, int256 jPPYield);
-event TrancheDeposit(address indexed user, bool isSenior, uint256 pptAmount, uint256 shares);
-event TrancheRedemption(address indexed user, bool isSenior, uint256 shares, uint256 pptAmount);
+event RedemptionRequested(uint256 indexed requestId, address indexed user, uint256 shares, uint8 channel);
+event RedemptionApproved(uint256 indexed requestId, address indexed approver);
+event RedemptionRejected(uint256 indexed requestId, address indexed rejecter, string reason);
+event RedemptionSettled(uint256 indexed requestId, address indexed user, uint256 assets, uint256 fee);
+event RedemptionCancelled(uint256 indexed requestId, address indexed user);
 ```
 
-### Protection Band Events
+### Asset Controller
 
 ```solidity
-event ProtectionBandTriggered(uint256 deviation, uint256 timestamp);
-event ProtectionBandRecovered(uint256 deviation, uint256 timestamp);
-event EmergencyRedemptionPaused(uint256 timestamp);
-event EmergencyRedemptionResumed(uint256 timestamp);
+event GrossValueUpdated(uint256 oldValue, uint256 newValue);
+event DelayedSettlementCreated(uint256 indexed id, uint8 settlementType, uint256 amount);
+event DelayedSettlementExecuted(uint256 indexed id);
+```
+
+### Pre-IPO SPV — EIP-3643 Token (`pSPCX`)
+
+```solidity
+event Transfer(address indexed from, address indexed to, uint256 value);
+event Approval(address indexed owner, address indexed spender, uint256 value);
+event Paused(address indexed agent);
+event Unpaused(address indexed agent);
+event AddressFrozen(address indexed userAddress, bool isFrozen, address indexed agent);
+event TokensFrozen(address indexed userAddress, uint256 amount);
+event TokensUnfrozen(address indexed userAddress, uint256 amount);
+event KYCProviderSet(address indexed kycProvider);
+```
+
+### Pre-IPO SPV — TokenBridge
+
+```solidity
+event PairCreated(address indexed securityToken, address indexed shadowToken, uint256 ratio);
+event Deposited(address indexed shadowToken, address indexed user, uint256 securityAmount, uint256 shadowMinted);
+event Redeemed(address indexed shadowToken, address indexed user, uint256 shadowBurned, uint256 securityReleased);
+event KYCProviderSet(address indexed kycProvider);
+```
+
+### Launchpad (`LaunchpadDrop` V4)
+
+```solidity
+event DropCreated(uint256 indexed dropId, address indexed rwaToken, uint256 totalSupply, uint256 basePrice);
+event LayerConfigUpdated(uint256 indexed dropId, uint256 indexed layerIdx, /* … fields … */);
+event PhaseAdvanced(uint256 indexed dropId, uint8 oldPhase, uint8 newPhase);
+event Committed(uint256 indexed dropId, uint256 indexed layerIdx, address indexed user, uint256 pointsReserved, uint256 usdtAmount);
+event LayerSettled(uint256 indexed dropId, uint256 indexed layerIdx, /* … */);
+event AllocationClaimed(uint256 indexed dropId, uint256 indexed layerIdx, address indexed user, uint256 rwaAmount, uint256 usdtSettled);
+event Refunded(uint256 indexed dropId, uint256 indexed layerIdx, address indexed user, uint256 usdtReturned);
+event RefundWindowClosed(uint256 indexed dropId, uint256 indexed layerIdx);
+event SettlementFinalized(uint256 indexed dropId);
+```
+
+### Soulbound Badges
+
+```solidity
+event BadgeMinted(address indexed user, uint8 badgeType, uint256 indexed dropId, uint64 mintTime);
+```
+
+### Points
+
+```solidity
+// PointsHubV2
+event ModuleRegistered(address indexed module, string name, uint256 moduleIndex);
+event RewardAdded(address indexed user, uint256 amount, bytes32 reason);
+event PointsDeducted(address indexed user, uint256 amount, bytes32 reason);
+
+// StakingModule
+event Staked(address indexed user, uint256 indexed stakeId, uint256 amount, uint8 stakeType, uint64 lockEndTime);
+event Unstaked(address indexed user, uint256 indexed stakeId, uint256 amount, uint256 penalty);
+event PointsAccrued(address indexed user, uint256 indexed stakeId, uint256 amount);
 ```
 
 ## Dashboard Metrics
@@ -69,9 +144,8 @@ Automated weekly report includes:
 
 1. **Supply Metrics**
    - Total PP supply
-   - sPP / jPP breakdown
-   - PAIMON circulating supply
-   - Unvested esPAIMON amounts
+   - pSPCX locked in TokenBridge / xSPCX outstanding (per pair)
+   - Active drops, total committed USDT, settled vs refunded
 
 2. **Liquidity Metrics**
    - L1/L2/L3 budget utilization

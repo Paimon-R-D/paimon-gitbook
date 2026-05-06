@@ -1,9 +1,16 @@
 # PAIMON Token Economics
 
-> **⚠️ Partial Implementation**
->
-> - ✅ **Implemented**: Token allocation structure, basic emission framework
-> - 🚧 **Planned (Phase 2)**: esPAIMON distribution, vePAIMON locking, Gauge voting, multi-tier vesting, Boost mechanism
+{% hint style="warning" %}
+**Token Not Issued — Phase 2 Design**
+
+**No `PAIMON` ERC-20 token has been issued on BSC mainnet** as of this writing. `esPAIMON`, `vePAIMON`, `EmissionManager`, `RewardDistributor` and the merkle-root distribution flow described below are **all design specifications**, not deployed contracts.
+
+The only "PAIMON-named" contracts currently on mainnet are:
+- `PaimonTreasury` — fund vault for Launchpad fees & redemption payouts
+- `PaimonBadge` — Soulbound NFT for Launchpad participation achievements
+
+These are infrastructure pieces, **not** the governance token. The allocation table, emission curve, vesting tiers and Boost mechanism below describe the target tokenomics that will activate when (and if) the PAIMON token launches.
+{% endhint %}
 
 ## Table of Contents
 

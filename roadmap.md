@@ -1,222 +1,116 @@
 # Roadmap
 
-## Development Phases
+## Where We Are Today
 
-| Phase | Milestones | Key Deliverables | Status |
-|-------|------------|------------------|--------|
-| **M0** | Paimon Prime | Prime Vault, Two-Channel Redemption, NAV Calculation | ✅ Implemented |
-| **M1** | Launchpad | Asset Onboarding, Hard Gate Review, Soft Scoring | 🚧 In Progress |
-| **M2** | DEX Launch | PP/USDC Trading Pair, Liquidity Incentives | Planned |
-| **M3** | Tranche Launch | sPP/jPP Tiering, Epoch Settlement | Planned |
-| **M4** | Mining Launch | jPP Gauge, esPAIMON Emission | Planned |
-| **M5** | Governance Launch | vePAIMON, Voting System, Protocol Fee Sharing | Planned |
-| **M6** | Full Cycle | Protection Band Automation, Plugin System | Planned |
-| **M7** | Evolution | v4 Hooks, Compliance Gating, Cross-chain Expansion | Planned |
+**Live on BSC Mainnet** as of this writing:
+
+- ✅ **Paimon Prime Vault (PP)** — ERC-4626 RWA fund with two-channel redemption
+- ✅ **Pre-IPO SPV Tokens (pSPCX / xSPCX)** — EIP-3643 + Shadow ERC-20 + TokenBridge, first asset issued: SpaceX SPV via xSPCX V4 drop (April 2026)
+- ✅ **Launchpad** — 4-Layer Drop with points-and-USDT double gate, V4.2.2
+- ✅ **Compliance Layer** — KYCAggregator + SimpleKYCProvider (institutional onboarding only)
+- ✅ **Points + Badges** — PointsHubV2, StakingModule (PPT staking with 1×–2× boost), LPStakingModule, PaimonBadge (Soulbound)
+- ✅ **External Adapters** — CashPlusAdapter (live external RWA integration)
+- ✅ **Operational Backend** — KEEPER / REBALANCER service accounts, off-chain RBAC, event listener with gap-fill, Celery-driven settlement automation
+
+**Not deployed** (described in this gitbook with a "Phase 2 Concept" banner):
+
+- Tranche Vault (sPP / jPP) — design only, no contract written
+- PAIMON token / vePAIMON / esPAIMON — token not yet issued
+- Paimon DEX (DEXFactory, DEXPair) — designed, not deployed
+- HYD synthetic asset, PSM, RWA-collateral CDP — separate design exploration
+- GaugeController / BribeMarketplace / RewardDistributor — designed, not deployed
+- Protection Band automation — manual KEEPER intervention only today
+
+## Phases
+
+| Phase | Focus | Key Deliverables | Status |
+|-------|-------|------------------|--------|
+| **M0** | Paimon Prime | PP Vault, two-channel redemption, NAV / Voucher | ✅ Live |
+| **M1** | Asset Onboarding & Launchpad | LaunchpadDrop V4, PointsHubV2, StakingModule, PaimonBadge | ✅ Live |
+| **M2** | Pre-IPO Tokenization | EIP-3643 + Shadow ERC-20 + Bridge, KYCAggregator; first issuance: xSPCX SpaceX SPV | ✅ Live |
+| **M3** | Multi-Asset Pre-IPO | Add additional pre-IPO assets (Anthropic SPV etc.) on the same EIP-3643 + Bridge architecture; expand KYC providers | 🚧 In Progress |
+| **M4** | Retail KYC | Open KYC onboarding to retail wallets so end users can self-serve into pSPCX redemption | Planned |
+| **M5** | Tranche Vault | sPP (Senior, fixed yield) / jPP (Junior, leveraged) split on top of PP | Planned (design phase) |
+| **M6** | DEX & Liquidity | Paimon DEX deployment with PP / xSPCX trading pairs; LP incentives | Planned |
+| **M7** | Token & Governance | PAIMON token issuance, vePAIMON locking, Gauge voting, BribeMarketplace, fee sharing | Planned |
+| **M8** | Protection Band Automation | TWAP-based deviation monitoring, automatic T+0 suspension trigger | Planned |
+| **M9** | Cross-Chain | Bridge to additional chains, unified PP / xSPCX across networks | Planned |
 
 ## Phase Details
 
 ### M0: Paimon Prime ✅
 
-**Objective**: Launch the core asset management infrastructure
+Core asset management infrastructure:
 
-**Deliverables**:
-- Prime Vault (ERC-4626) smart contracts
-- Two-channel redemption mechanism (T+0, T+7) with approval workflow
-- NAV calculation via AssetController
-- Redemption Voucher (ERC-721) for delayed settlements
-- Basic UI for deposit/redemption
+- PPT contract (ERC-4626) with NAV / share price calculation
+- Two-channel redemption (Standard T+7, Emergency T+0) with KEEPER approval workflow above thresholds
+- AssetController + adapters (CashPlus live)
+- RedemptionVoucher (ERC-721) for delayed settlements
+- CertiK audit completed January 2026
 
-**Success Criteria**:
-- Contracts audited
-- Test deployment successful
-- Documentation complete
+### M1: Launchpad & Reputation ✅
 
----
+- LaunchpadDrop V4.2.2 with 4-Layer points-gated drops
+- PointsHubV2 hub with REWARD_ROLE / DEDUCTOR_ROLE design for pluggable modules
+- StakingModule v2.3 (credit-card points model with lock-duration boost)
+- LPStakingModule for AMM positions
+- PaimonBadge (Soulbound, 5 badge types)
+- PointsRedemption for off-chain reward conversion
 
-### M1: Launchpad 🚧
+### M2: Pre-IPO Tokenization ✅
 
-**Objective**: Enable compliant asset onboarding to Prime Vault
+- EIP3643Token implementation (UUPS upgradeable, agent / KYC / freeze / forced-transfer)
+- ShadowERC20 (UUPS, mint/burn restricted to bridge)
+- TokenBridge hub with N-pair support
+- KYCAggregator + SimpleKYCProvider (institutional whitelist)
+- First issuance: **xSPCX SpaceX SPV V4 drop, April 13–20 2026** — $200K raise, 30,600 tokens, 4 layers ($2.75 / $4.58 / $6.40 / $6.93), MerkleClaim settlement
 
-**Deliverables**:
-- Hard Gate Review system (custody, audit, disclosure requirements)
-- Soft Scoring mechanism for risk assessment
-- Asset metadata and disclosure portal
-- Issuer onboarding workflow
+### M3: Multi-Asset Pre-IPO 🚧
 
-**Success Criteria**:
-- First asset successfully onboarded
-- Review process documented
-- Disclosure standards published
+Goal: add additional pre-IPO assets (e.g. Anthropic SPV) on the existing infrastructure. Adding a new asset requires only:
 
----
+1. Deploy new `EIP3643Token` proxy (e.g. pPNTC)
+2. Deploy new `ShadowERC20` proxy (e.g. xPNTC)
+3. `TokenBridge.createPair(newSecurity, newShadow, ratio)`
+4. Grant agent / bridge roles
 
-### M2: DEX Launch
+The same KYCAggregator whitelist applies to all assets — no re-onboarding of existing KYC users.
 
-**Objective**: Enable secondary market trading for PP
+### M4: Retail KYC
 
-**Deliverables**:
-- PP/USDC liquidity pool deployment
-- Initial liquidity provision
-- Trading interface integration
-- Basic LP incentives
+Open the KYC pipeline to retail wallets. Today's KYCAggregator + SimpleKYCProvider are deployed but onboarding is institutional-only. M4 brings the user-facing KYC flow online so any wallet can self-serve verification and access pSPCX redemption.
 
-**Success Criteria**:
-- Minimum $1M initial liquidity
-- Stable trading operations
-- TWAP oracle functioning
+### M5: Tranche Vault
 
----
+Senior / Junior yield stratification on top of PP. Senior receives a fixed yield (e.g. 4% APY); Junior receives the residual after Senior is paid, providing leveraged exposure but bearing first-loss risk. **Design phase only** — no contract written, no parameters finalized.
 
-### M3: Tranche Launch
+### M6: DEX & Liquidity
 
-**Objective**: Introduce yield stratification products
+Deploy Paimon's own AMM (V2-style with 0.25 % fee, 70 / 30 voter / treasury split). Initial pairs: PP/USDT, xSPCX/USDT. Provides protocol-controlled venue for both products' secondary liquidity, plus a fee surface that flows into Treasury / future vePAIMON.
 
-**Deliverables**:
-- Tranche Vault contracts (sPP/jPP)
-- Epoch settlement mechanism
-- Priority repayment logic
-- Junior ratio constraints
+### M7: Token & Governance
 
-**Success Criteria**:
-- Correct yield distribution
-- Proper priority handling
-- Risk controls active
+Issue PAIMON token (10B max supply, capped). Activate vePAIMON locking, GaugeController for emission allocation across pools, BribeMarketplace for external incentives, RewardDistributor for merkle-root reward distribution. Migration of off-chain RBAC + KEEPER multisig to on-chain governance proposals (with timelock + tiered risk levels).
 
----
+### M8: Protection Band Automation
 
-### M4: Mining Launch
+Today's "protection band" is a manual KEEPER lever — operators can pause Emergency redemptions if they observe NAV / market price divergence. M8 automates this via TWAP deviation monitoring with automatic suspension at ±15 % threshold.
 
-**Objective**: Activate token emission and staking incentives
+### M9: Cross-Chain
 
-**Deliverables**:
-- jPP Gauge deployment
-- esPAIMON emission system
-- Vesting tier selection
-- Boost mechanism
+Bridge PP and xSPCX to additional EVM chains (Ethereum mainnet, Arbitrum, Base) via LayerZero or comparable infrastructure. Maintain unified KYC across chains.
 
-**Success Criteria**:
-- Emission tracking accurate
-- Vesting working correctly
-- Boost calculations verified
+## Risk Factors per Phase
 
----
-
-### M5: Governance Launch
-
-**Objective**: Enable decentralized governance
-
-**Deliverables**:
-- vePAIMON locking mechanism
-- Gauge voting system
-- Protocol fee distribution
-- Proposal framework
-
-**Success Criteria**:
-- Voting power correctly calculated
-- Fee distribution accurate
-- Governance UI functional
-
----
-
-### M6: Full Cycle
-
-**Objective**: Complete the protocol ecosystem
-
-**Deliverables**:
-- Protection Band automation (TWAP monitoring, auto-pause)
-- Plugin system for delegates
-- External incentive (Nitro) support
-- Advanced analytics dashboard
-
-**Success Criteria**:
-- Protection Band triggers working
-- Plugins deployed
-- Nitro incentives distributed
-
----
-
-### M7: Evolution
-
-**Objective**: Implement advanced features and expand capabilities
-
-**Deliverables**:
-- Uniswap v4 hooks integration
-- Compliance gating options
-- Lending layer exploration
-- Cross-chain expansion
-
-**Success Criteria**:
-- Hooks deployed and tested
-- Compliance framework documented
-- Expansion strategy defined
-
----
-
-## Timeline Visualization
-
-```
-        M0       M1       M2       M3       M4       M5       M6       M7
-        │        │        │        │        │        │        │        │
-        ▼        ▼        ▼        ▼        ▼        ▼        ▼        ▼
-┌────────────────────────────────────────────────────────────────────────────┐
-│                                                                            │
-│  Prime  │ Launch │  DEX   │Tranche │ Mining │  Gov   │  Full  │  Evol    │
-│  Vault  │  pad   │ Launch │ Launch │ Launch │ Launch │ Cycle  │  ution   │
-│   ✅    │   🚧   │        │        │        │        │        │          │
-│                                                                            │
-└────────────────────────────────────────────────────────────────────────────┘
-        │        │        │        │        │        │        │        │
-      Core    Asset   Secondary  Yield   Token   Decen-   Eco-   Advanced
-      Infra   Onboard  Market    Split  Emission tralize  system Features
-```
-
-## Dependencies
-
-```
-M0 (Paimon Prime) ✅
-    │
-    └──► M1 (Launchpad) 🚧
-              │
-              ├──────────────► M2 (DEX Launch)
-              │                    │
-              │                    ▼
-              └──────────────► M3 (Tranche Launch)
-                                   │
-                                   ▼
-                              M4 (Mining Launch)
-                                   │
-                                   ▼
-                              M5 (Governance Launch)
-                                   │
-                                   ▼
-                              M6 (Full Cycle)
-                                   │
-                                   ▼
-                              M7 (Evolution)
-```
-
-## Risk Factors
-
-| Phase | Key Risks | Mitigation |
-|-------|-----------|------------|
-| M0 | Smart contract bugs | Multiple audits, bug bounty |
-| M1 | Asset quality issues | Strict hard gate criteria |
-| M2 | Insufficient liquidity | Incentive programs, LP incentives |
-| M3 | Incorrect yield calculation | Extensive testing, formal verification |
-| M4 | Token price volatility | Gradual emission, vesting tiers |
-| M5 | Low governance participation | Incentive alignment, education |
-| M6 | Protection Band manipulation | Strict monitoring, penalty system |
-| M7 | Regulatory changes | Flexible compliance framework |
-
-## Success Metrics by Phase
-
-| Phase | Primary Metric | Target |
-|-------|----------------|--------|
-| M0 | TVL | $10M |
-| M1 | Assets Onboarded | 3 qualified assets |
-| M2 | Daily Volume | $1M |
-| M3 | Tranche Utilization | 50% of PP |
-| M4 | Staking Rate | 30% of jPP |
-| M5 | Voting Participation | 20% of vePAIMON |
-| M6 | Plugin Count | 5 active plugins |
-| M7 | v4 Hook Adoption | 3 custom hooks |
+| Phase | Key Risk | Mitigation |
+|-------|----------|-----------|
+| M0 | Smart-contract bugs in core vault | CertiK audit complete; ongoing monitoring |
+| M1 | Launchpad griefing via points spam | StakingModule MIN_STAKE_AMOUNT = 10 PPT; ratio limits per layer |
+| M2 | Bridge invariant break | UUPS upgrades behind multisig + timelock; on-chain invariant verification |
+| M3 | Operational scale-out (multi-asset) | Hub-and-spoke design — KYC layer reused; per-asset risk isolated |
+| M4 | KYC provider failure / data breach | Multi-source aggregation; provider can be swapped without contract redeploy |
+| M5 | Tranche pricing model | Extensive simulation, formal verification of yield distribution |
+| M6 | LP impermanent loss | Incentive design + protocol-owned liquidity |
+| M7 | Token launch volatility | Vesting schedules, gradual emission |
+| M8 | TWAP manipulation | Multi-block window, outlier exclusion |
+| M9 | Cross-chain bridge exploits | Audit-heavy bridge selection; insurance |

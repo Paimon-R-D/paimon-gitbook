@@ -186,13 +186,27 @@ Audit reports will be made publicly available upon completion. Subscribe to our 
 | Medium | $2K - $10K |
 | Low | $500 - $2K |
 
+## Pre-IPO SPV Risks (xSPCX / pSPCX)
+
+In addition to the Prime Vault risks above, holders of pre-IPO SPV tokens should understand:
+
+| Risk | Description | Mitigation |
+|------|-------------|------------|
+| **Single-issuer concentration** | xSPCX value tracks one underlying SPV (today: SpaceX). Idiosyncratic events at the issuer fully reflect into the token | Diversify across products / venues; do not size positions assuming PP-style portfolio cushion |
+| **SPV-administrator solvency** | The off-chain SPV is a separate legal entity; insolvency or fraud at the SPV administrator can impair the underlying claim | Operational due diligence on SPV partners; documented in drop metadata |
+| **Private-market valuation** | The underlying private equity has no daily mark-to-market; large bid-ask spreads may emerge | Treat reported NAVs as point estimates, not closing prices |
+| **KYC-asymmetric exit** | Non-KYC holders can transfer xSPCX freely but **cannot redeem to pSPCX**. If primary settlement against the SPV becomes the only liquidity venue, non-KYC holders rely on KYC counterparties | Plan exit through xSPCX secondary trading; do not assume primary redemption is available without KYC |
+| **Bridge invariant** | `totalSupply(xSPCX) = locked(pSPCX) × ratio` is enforced in `TokenBridge`, but a UUPS upgrade error or compromised admin key could in principle break the peg | Multi-sig + timelock on UPGRADER_ROLE; on-chain invariant check verifiable by anyone |
+| **EIP-3643 agent powers** | `AGENT_ROLE` on pSPCX can `freeze`, `forcedTransfer`, `pause`. Used for compliance enforcement but represents centralization | Multisig agent + event emission; agent actions auditable |
+| **Regulatory change** | Securities-law treatment of the SPV interest depends on jurisdiction; future changes can affect transferability or holder rights | Geographic disclosure; KYC onboarding restricted to permitted jurisdictions |
+
 ## User Responsibility
 
 Users should understand:
 
-1. **PP is not a stablecoin** - NAV fluctuates with underlying assets
-2. **Instant liquidity is not guaranteed** - Redemptions are subject to quota availability and approval thresholds
-3. **Large redemptions require approval** - Amounts exceeding thresholds (50K standard, 30K emergency) need keeper approval
-4. **Junior tranche (jPP) has leverage risk** - Can lose entire principal *(Phase 2 feature)*
-5. **Governance decisions affect returns** - Participate or accept outcomes
-6. **Smart contract risk exists** - Despite audits, bugs are possible
+1. **PP is not a stablecoin** — NAV fluctuates with underlying assets
+2. **Instant liquidity is not guaranteed** — Redemptions are subject to quota availability and approval thresholds
+3. **Large redemptions require approval** — Amounts exceeding thresholds (50K standard, 30K emergency) need keeper approval
+4. **xSPCX and pSPCX are not equivalent in legal rights** — xSPCX is a tradable mirror; only pSPCX holders have direct settlement rights against the SPV. Conversion requires KYC
+5. **KYC onboarding is currently institutional-only** — retail wallets should treat xSPCX as their endpoint
+6. **Smart contract risk exists** — despite audits, bugs are possible
