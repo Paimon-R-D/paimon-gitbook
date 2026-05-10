@@ -32,24 +32,19 @@ Both products are issued through a shared **Launchpad** (4-Layer points-gated dr
 
 ## Mainnet Footprint
 
+User-facing tokens that holders directly interact with on BSC mainnet:
+
 | Contract | BSC Mainnet address |
 |----------|---------------------|
 | `PPT` (Prime Vault) | `0x8505c32631034A7cE8800239c08547e0434EdaD9` |
-| `RedemptionManager` | `0xd614a6fe8C35aC9af4F59cd14849877179cDCdB9` |
-| `AssetController` | `0x6F5170956132588E9b2844478f1fF1B387573A3D` |
-| `RedemptionVoucher` | `0x73F42b0D657785fE844e3BF486Fe1e15fFE13514` |
-| `CashPlusAdapter` | `0xf3a17a5362b6f5b2bCB1AE0C0DE86b70e1ae4a53` |
 | `pSPCX` (EIP-3643) | `0x6DC9a487bF8Fd047e41AB336003AE6e4FE602646` |
 | `xSPCX` (Shadow) | `0x05353Dabf163Fb2fec87f9e0f00f94Eae4AC1631` |
-| `TokenBridge` | `0xE4Eeba287494e694DFf63d7723B0A046506C8910` |
 | `LaunchpadDrop` V4 | `0xea088Af719F3238982823fa5eE1C1FaCb2E0e231` |
-| `LaunchpadSettlement` | `0x9F7eCde85815f3B616C25a54d181F8766c869a90` |
-| `PaimonTreasury` | `0xD9312A3fa2ad5cBEA2C2a36124c72f30025AcAC7` |
 | `PaimonBadge` | `0x48e9a6846D9722599621aF8A6af0F23b0dB8184a` |
 | `PointsHubV2` | `0x748560eaCcd4C01FC29b3B5b72d3b8C85B2B5017` |
 | `StakingModule` | `0x80D9b50f4f1ECdd30CD61E400bf8B9b74eC8795f` |
-| `KYCAggregator` | `0xF8DfE25C8C565e057420716F0d2b2905eF8f5227` |
-| `SimpleKYCProvider` | `0x2f5503A0D0F9Aba32B82AFbD7395D2096c7FaA2d` |
+
+Operational and compliance-layer contracts (settlement, treasury, KYC, oracle adapters, redemption infrastructure) are intentionally not enumerated here. They are managed under multisig + timelock and visible on-chain through the user-facing tokens above.
 
 ## What's *Not* Live (Phase 2 Roadmap)
 

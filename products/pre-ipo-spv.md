@@ -10,7 +10,7 @@ This is **live on BSC mainnet**.
 |-------|---------|----------|---------------------------|-----------------|
 | `pSPCX` | **Permissioned** primary token — legal "security" wrapper of the SPV | EIP-3643 | ✅ Yes | `0x6DC9a487bF8Fd047e41AB336003AE6e4FE602646` |
 | `xSPCX` | **Tradable** shadow — DeFi-friendly mirror | Plain ERC-20 (UUPS) | ❌ No | `0x05353Dabf163Fb2fec87f9e0f00f94Eae4AC1631` |
-| `TokenBridge` | The only mint/burn authority bridging the two | UUPS | — | `0xE4Eeba287494e694DFf63d7723B0A046506C8910` |
+| `TokenBridge` | The only mint/burn authority bridging the two | UUPS | — | (operational, not enumerated) |
 
 The two tokens are **not interchangeable** through normal ERC-20 mechanics. They are linked exclusively through `TokenBridge`, which holds the invariant:
 

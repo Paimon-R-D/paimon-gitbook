@@ -62,7 +62,7 @@ These contracts are deployed on BSC mainnet and have been **internally reviewed*
 
 ## Ongoing Security
 
-- Continuous monitoring of deployed contracts via the backend event listener (WebSocket + polling + gap-fill)
+- Continuous monitoring of deployed contracts via the operational backend's event ingestion pipeline (redundant transports with gap recovery)
 - Bug bounty program (coming soon)
 - UUPS upgrade authority gated by multisig + timelock for every proxy
 - Regular security reviews for contract upgrades

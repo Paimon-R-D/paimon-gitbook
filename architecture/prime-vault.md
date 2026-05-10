@@ -123,9 +123,11 @@ Paimon extends ERC-4626 with:
 
 Prime Vault holds underlying assets directly when they are simple ERC-20s, and uses adapters for assets with off-chain settlement flows:
 
-| Adapter | Mainnet address | Underlying | Notes |
-|---------|-----------------|------------|-------|
-| `CashPlusAdapter` | `0xf3a17a5362b6f5b2bCB1AE0C0DE86b70e1ae4a53` | CashPlus Vault `0x1775504c5873e179Ea2f8ABFcE3861EC74D159bc` | External RWA money-market fund (CASH+ token, ~$107). Subscription requires **off-chain SPV approval**; backend probes `claim()` via `eth_call` once per hour and auto-advances `SUBSCRIPTION_LINKED → SPV_APPROVED → CONFIRMED` |
-| `PaimonOracleAdapter` | — | Multi-asset price oracle | Aggregates Chainlink + custodian NAV feeds with circuit-breaker checks |
+| Adapter | Underlying | Notes |
+|---------|------------|-------|
+| `CashPlusAdapter` | External RWA money-market fund (CASH+ token, ~$107) | Subscription requires **off-chain SPV approval**; the operational backend probes `claim()` once per hour and auto-advances `SUBSCRIPTION_LINKED → SPV_APPROVED → CONFIRMED` |
+| `PaimonOracleAdapter` | Multi-asset price oracle | Aggregates Chainlink + custodian NAV feeds with circuit-breaker checks |
+
+Adapter contract addresses are operational (not enumerated in published documentation) and managed under multisig + timelock; on-chain interactions remain publicly observable through `PPT` events.
 
 See [Redemption Mechanism](redemption-mechanism.md) for the full request → approval → settlement state machine.

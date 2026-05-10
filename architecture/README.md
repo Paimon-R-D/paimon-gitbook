@@ -63,10 +63,10 @@ Paimon Finance is composed of **two independent product lines** sitting on a **s
        │  Off-chain operations
        │
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│   Backend (FastAPI + Celery + TimescaleDB + Redis)                            │
-│   • Event listener (WebSocket primary + HTTP polling + gap-fill)              │
+│   Off-chain operational backend (event-driven)                                │
+│   • On-chain event ingestion with redundant transports + gap recovery         │
 │   • KEEPER / REBALANCER service accounts for chain ops                        │
-│   • RBAC for admin operations                                                 │
+│   • Off-chain RBAC for human-triggered operations                             │
 │   • Rebalance engine, approval workflow, settlement automation                │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -101,13 +101,13 @@ KYC onboarding is currently **B2B / institutional only**. Retail wallets can hol
 
 ### Off-Chain Backend
 
-A Python (FastAPI + Celery) backend runs the operational layer:
+An event-driven operational backend runs the off-chain layer:
 
-- Event ingestion (WebSocket → HTTP polling → gap-fill)
+- On-chain event ingestion with redundant transports + gap recovery
 - KEEPER / REBALANCER service accounts that sign on-chain transactions for redemption approvals, asset purchases, drop phase advances, layer settlement, etc.
 - Off-chain RBAC gating which human users can trigger which on-chain operations
 - Rebalance strategy engine (single active strategy, mutual-exclusion with manual rebalance)
-- CashPlus settlement automation (claim() probe + auto-advance state machine)
+- External-vault settlement automation (status probes + auto-advance state machine)
 
 Critical design rule: **the blockchain is the source of truth**. The backend never holds business state that is not derivable from on-chain events.
 

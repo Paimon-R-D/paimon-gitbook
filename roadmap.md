@@ -10,7 +10,7 @@
 - ✅ **Compliance Layer** — KYCAggregator + SimpleKYCProvider (institutional onboarding only)
 - ✅ **Points + Badges** — PointsHubV2, StakingModule (PPT staking with 1×–2× boost), LPStakingModule, PaimonBadge (Soulbound)
 - ✅ **External Adapters** — CashPlusAdapter (live external RWA integration)
-- ✅ **Operational Backend** — KEEPER / REBALANCER service accounts, off-chain RBAC, event listener with gap-fill, Celery-driven settlement automation
+- ✅ **Operational Backend** — KEEPER / REBALANCER service accounts, off-chain RBAC, event-driven listener with gap recovery, automated settlement workflows
 
 **Not deployed** (described in this gitbook with a "Phase 2 Concept" banner):
 

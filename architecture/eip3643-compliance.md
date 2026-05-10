@@ -120,7 +120,7 @@ Because `mint` and `burn` are gated to a single contract, the supply is always r
 ## TokenBridge Contract
 
 **Source**: `src/eip3643/TokenBridge.sol` (UUPS upgradeable)
-**Mainnet**: `0xE4Eeba287494e694DFf63d7723B0A046506C8910`
+**Deployment**: live on BSC mainnet (operational; address not enumerated)
 
 A single bridge instance can manage `N` pairs. Each pair stores:
 

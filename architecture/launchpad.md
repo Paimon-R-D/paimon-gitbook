@@ -5,8 +5,8 @@ The Paimon Launchpad is the issuance venue for Paimon-curated alternative assets
 | Module | Mainnet address |
 |--------|-----------------|
 | `LaunchpadDrop` (V4.2.2) | `0xea088Af719F3238982823fa5eE1C1FaCb2E0e231` |
-| `LaunchpadSettlement` | `0x9F7eCde85815f3B616C25a54d181F8766c869a90` |
-| `PaimonTreasury` (launchpad) | `0xD9312A3fa2ad5cBEA2C2a36124c72f30025AcAC7` |
+| `LaunchpadSettlement` | (operational, not enumerated) |
+| `PaimonTreasury` (launchpad) | (operational, not enumerated) |
 | `PaimonBadge` | `0x48e9a6846D9722599621aF8A6af0F23b0dB8184a` |
 | `PointsHubV2` | `0x748560eaCcd4C01FC29b3B5b72d3b8C85B2B5017` |
 | Settlement currency | USDT BSC `0x55d398326f99059fF775485246999027B3197955` |
@@ -106,17 +106,19 @@ After a layer settles in MerkleClaim mode, users who committed but did not recei
 
 ## Operator Flow
 
-For a fund manager running a drop end-to-end through the admin dashboard:
+End-to-end Drop lifecycle as executed by the issuance operator:
 
-1. `PUT /config/refund-window {duration_seconds}` — set refund window
-2. `POST /admin/launchpad/drops` — create drop (auto-approves RWA token transfer + on-chain `createDrop`)
-3. `POST /metadata/{metadataId}/link/{dropId}` — attach project info / image / description
-4. **"Launch Drop"** button → `Created → QuestActive`
-5. Wait for commitment window to close
-6. **"Advance Phase"** → `LayerSale`; for each layer, `setSettlementRoot(layerIdx, root)` if in MerkleClaim mode
-7. Users `claimAllocation` with merkle proof
-8. **"Advance Phase"** → `Settled`
+1. Configure refund window duration
+2. Create drop — escrows the RWA token, runs on-chain `createDrop` with the layer config
+3. Link metadata (project info / image / description) to the drop
+4. Advance `Created → QuestActive`
+5. Wait for the commitment window to close
+6. Advance to `LayerSale`; for each layer, set the settlement merkle root (MerkleClaim mode) or run batch settlement (Batch mode)
+7. Users `claimAllocation` with their merkle proof
+8. Advance to `Settled`
 9. `closeRefundWindow(layerIdx)` × 4 → `finalizeSettlement(dropId)`
+
+All steps map to on-chain calls on `LaunchpadDrop` / `LaunchpadSettlement`; the operator dashboard is the off-chain UI that batches these calls and signs them with the KEEPER service account under multisig review.
 
 ## What This Replaces
 

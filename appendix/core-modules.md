@@ -9,12 +9,12 @@ This page lists every contract module that is part of the Paimon protocol design
 | Module | Mainnet address | Source |
 |--------|-----------------|--------|
 | `PPT` (Prime Vault, ERC-4626) | `0x8505c32631034A7cE8800239c08547e0434EdaD9` | `src/ppt/PPT.sol` |
-| `RedemptionManager` | `0xd614a6fe8C35aC9af4F59cd14849877179cDCdB9` | `src/ppt/RedemptionManager.sol` |
-| `AssetController` | `0x6F5170956132588E9b2844478f1fF1B387573A3D` | `src/ppt/AssetController.sol` |
-| `RedemptionVoucher` (ERC-721) | `0x73F42b0D657785fE844e3BF486Fe1e15fFE13514` | `src/ppt/RedemptionVoucher.sol` |
-| `PaimonOracleAdapter` | `0x6b752F021749D8D82CE6262ADAAf093CFaEa3034` | `src/adapters/PaimonOracleAdapter.sol` |
-| `CashPlusAdapter` | `0xf3a17a5362b6f5b2bCB1AE0C0DE86b70e1ae4a53` | `src/adapters/CashPlusAdapter.sol` |
-| External `CashPlus Vault` | `0x1775504c5873e179Ea2f8ABFcE3861EC74D159bc` | (third party) |
+| `RedemptionManager` | (operational, not enumerated) | `src/ppt/RedemptionManager.sol` |
+| `AssetController` | (operational, not enumerated) | `src/ppt/AssetController.sol` |
+| `RedemptionVoucher` (ERC-721) | (operational, not enumerated) | `src/ppt/RedemptionVoucher.sol` |
+| `PaimonOracleAdapter` | (operational, not enumerated) | `src/adapters/PaimonOracleAdapter.sol` |
+| `CashPlusAdapter` | (operational, not enumerated) | `src/adapters/CashPlusAdapter.sol` |
+| External money-market vault | (third-party, not enumerated) | (third party) |
 
 ### Product Line B — Pre-IPO SPV Tokens
 
@@ -22,27 +22,29 @@ This page lists every contract module that is part of the Paimon protocol design
 |--------|-----------------|--------|
 | `pSPCX` (EIP3643Token) | `0x6DC9a487bF8Fd047e41AB336003AE6e4FE602646` | `src/eip3643/EIP3643Token.sol` |
 | `xSPCX` (ShadowERC20) | `0x05353Dabf163Fb2fec87f9e0f00f94Eae4AC1631` | `src/eip3643/ShadowERC20.sol` |
-| `TokenBridge` | `0xE4Eeba287494e694DFf63d7723B0A046506C8910` | `src/eip3643/TokenBridge.sol` |
+| `TokenBridge` | (operational, not enumerated) | `src/eip3643/TokenBridge.sol` |
 
 ### Compliance Layer
 
 | Module | Mainnet address | Source |
 |--------|-----------------|--------|
-| `KYCAggregator` | `0xF8DfE25C8C565e057420716F0d2b2905eF8f5227` | `src/eip3643/KYCAggregator.sol` |
-| `SimpleKYCProvider` | `0x2f5503A0D0F9Aba32B82AFbD7395D2096c7FaA2d` | `src/eip3643/SimpleKYCProvider.sol` |
+| `KYCAggregator` | (operational, not enumerated) | `src/eip3643/KYCAggregator.sol` |
+| `SimpleKYCProvider` | (operational, not enumerated) | `src/eip3643/SimpleKYCProvider.sol` |
 
 ### Shared Issuance + Reputation Layer
 
 | Module | Mainnet address | Source |
 |--------|-----------------|--------|
 | `LaunchpadDrop` V4.2.2 | `0xea088Af719F3238982823fa5eE1C1FaCb2E0e231` | `src/launchpad/LaunchpadDrop.sol` |
-| `LaunchpadSettlement` | `0x9F7eCde85815f3B616C25a54d181F8766c869a90` | `src/launchpad/LaunchpadSettlement.sol` |
-| `PaimonTreasury` (launchpad) | `0xD9312A3fa2ad5cBEA2C2a36124c72f30025AcAC7` | `src/treasury/PaimonTreasury.sol` |
+| `LaunchpadSettlement` | (operational, not enumerated) | `src/launchpad/LaunchpadSettlement.sol` |
+| `PaimonTreasury` (launchpad) | (operational, not enumerated) | `src/treasury/PaimonTreasury.sol` |
 | `PaimonBadge` (Soulbound ERC-721) | `0x48e9a6846D9722599621aF8A6af0F23b0dB8184a` | `src/launchpad/PaimonBadge.sol` |
 | `PointsHubV2` | `0x748560eaCcd4C01FC29b3B5b72d3b8C85B2B5017` | `src/point/PointsHubV2.sol` |
 | `StakingModule` (PPT staking) | `0x80D9b50f4f1ECdd30CD61E400bf8B9b74eC8795f` | `src/point/StakingModule.sol` |
 | `LPStakingModule` | (deployed) | `src/point/LPStakingModule.sol` |
 | `PointsRedemption` | (deployed) | `src/point/PointsRedemption.sol` |
+
+> Modules marked **"operational, not enumerated"** are infrastructure / settlement / compliance contracts managed under multisig + timelock. Their addresses are visible on-chain through interactions with the user-facing tokens above; we do not enumerate them in published documentation.
 
 ## 🚧 Phase-2 — Designed, Not Deployed
 
@@ -121,7 +123,7 @@ Manages asset value updates and delayed settlement (e.g. CashPlus subscription).
 
 ### `RedemptionVoucher` (ERC-721)
 
-Issued when a redemption's expected settlement extends past the standard window. Contains `requestId`, net amount, expected settlement time. Transferable; settle path: `POST /redemptions/{id}/settle-with-voucher`.
+Issued when a redemption's expected settlement extends past the standard window. Contains `requestId`, net amount, expected settlement time. Transferable; the voucher holder calls a public settle endpoint to claim the underlying once settlement actually occurs.
 
 ### `EIP3643Token` (pSPCX)
 

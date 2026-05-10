@@ -107,7 +107,7 @@ Large redemptions require keeper approval before processing:
 
 ## Redemption Voucher (NFT)
 
-When a redemption request's expected settlement extends beyond the standard window, the request flips its `hasVoucher` flag and an ERC-721 voucher is minted by `RedemptionVoucher` (`0x73F42b0D657785fE844e3BF486Fe1e15fFE13514`):
+When a redemption request's expected settlement extends beyond the standard window, the request flips its `hasVoucher` flag and an ERC-721 voucher is minted by `RedemptionVoucher` (contract address operational, not enumerated):
 
 | Feature | Description |
 |---------|-------------|
@@ -115,7 +115,7 @@ When a redemption request's expected settlement extends beyond the standard wind
 | **Token Standard** | ERC-721 (transferable) |
 | **Contents** | `requestId`, net redeem amount, expected settlement timestamp |
 | **Purpose** | Lets a user transfer or sell their pending claim if they cannot wait for settlement |
-| **Settle path** | `POST /api/v1/redemptions/{id}/settle-with-voucher` — voucher holder claims the underlying once settlement actually occurs |
+| **Settle path** | A public settle endpoint that lets the voucher holder claim the underlying once settlement actually occurs |
 
 ## Redemption Flow
 
